@@ -62,6 +62,17 @@
   --color-smui-surface-3: hsl(var(--smui-surface-3));
   --color-smui-border-hover: hsl(var(--smui-border-hover));
 
+  /* Terminal exotics */
+  --color-smui-terminal: hsl(var(--smui-terminal));
+  --color-smui-amber: hsl(var(--smui-amber));
+  --color-smui-cyan: hsl(var(--smui-cyan));
+  --color-smui-pink: hsl(var(--smui-pink));
+  --color-smui-magenta: hsl(var(--smui-magenta));
+  --color-smui-crimson: hsl(var(--smui-crimson));
+  --color-smui-teal: hsl(var(--smui-teal));
+  --color-smui-indigo: hsl(var(--smui-indigo));
+  --color-smui-lime: hsl(var(--smui-lime));
+
 }
 
 /* Typography scale -- non-inline so Tailwind emits real CSS custom properties */
@@ -96,10 +107,10 @@
   --input: hsl(219 18% 72%);
   --ring: hsl(213 32% 40%);
   --chart-1: hsl(213 32% 44%);
-  --chart-2: hsl(210 34% 42%);
-  --chart-3: hsl(92 30% 36%);
-  --chart-4: hsl(40 70% 35%);
-  --chart-5: hsl(311 28% 42%);
+  --chart-2: hsl(326 55% 40%);
+  --chart-3: hsl(120 50% 28%);
+  --chart-4: hsl(36 70% 34%);
+  --chart-5: hsl(270 45% 40%);
   --sidebar: hsl(218 27% 89%);
   --sidebar-foreground: hsl(220 16% 22%);
   --sidebar-primary: hsl(213 32% 40%);
@@ -124,6 +135,15 @@
   --smui-surface-2: 219 28% 84%;
   --smui-surface-3: 219 20% 76%;
   --smui-border-hover: 220 17% 50%;
+  --smui-terminal: 120 50% 28%;
+  --smui-amber: 36 70% 34%;
+  --smui-cyan: 180 55% 30%;
+  --smui-pink: 326 55% 40%;
+  --smui-magenta: 270 45% 40%;
+  --smui-crimson: 0 60% 38%;
+  --smui-teal: 168 55% 28%;
+  --smui-indigo: 225 50% 38%;
+  --smui-lime: 78 55% 30%;
 }
 
 /* Dark mode (Nord Polar Night) */
@@ -149,10 +169,10 @@
   --input: hsl(217 17% 28%);
   --ring: hsl(193 44% 67%);
   --chart-1: hsl(193 44% 67%);
-  --chart-2: hsl(213 32% 52%);
-  --chart-3: hsl(92 28% 65%);
-  --chart-4: hsl(40 71% 73%);
-  --chart-5: hsl(311 24% 63%);
+  --chart-2: hsl(326 100% 74%);
+  --chart-3: hsl(120 72% 55%);
+  --chart-4: hsl(36 100% 60%);
+  --chart-5: hsl(270 80% 72%);
   --sidebar: hsl(217 16% 15.5%);
   --sidebar-foreground: hsl(213 27% 88%);
   --sidebar-primary: hsl(193 44% 67%);
@@ -175,6 +195,15 @@
   --smui-surface-2: 216 15% 19%;
   --smui-surface-3: 215 14% 22%;
   --smui-border-hover: 216 12% 37%;
+  --smui-terminal: 120 72% 55%;
+  --smui-amber: 36 100% 60%;
+  --smui-cyan: 180 85% 65%;
+  --smui-pink: 326 100% 74%;
+  --smui-magenta: 270 80% 72%;
+  --smui-crimson: 0 85% 62%;
+  --smui-teal: 168 80% 55%;
+  --smui-indigo: 225 75% 68%;
+  --smui-lime: 78 80% 62%;
 }
 
 @layer base {

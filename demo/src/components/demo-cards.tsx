@@ -146,7 +146,7 @@ export function VesselConfig() {
           vessel config
         </CardTitle>
         <CardDescription className="text-xs text-muted-foreground flex items-center gap-1">
-          <span className="inline-block w-[5px] h-[5px] rounded-full bg-[hsl(var(--smui-green))]" />
+          <span className="inline-block w-[5px] h-[5px] rounded-full bg-[hsl(var(--smui-terminal))]" />
           active
         </CardDescription>
       </CardHeader>
@@ -191,9 +191,9 @@ export function VesselConfig() {
 export function CrewRoster() {
   const statusColors = {
     online:
-      "text-[hsl(var(--smui-green))] border-[hsl(var(--smui-green)/0.3)]",
+      "text-[hsl(var(--smui-terminal))] border-[hsl(var(--smui-terminal)/0.3)]",
     standby:
-      "text-[hsl(var(--smui-yellow))] border-[hsl(var(--smui-yellow)/0.3)]",
+      "text-[hsl(var(--smui-amber))] border-[hsl(var(--smui-amber)/0.3)]",
     "off-duty": "text-muted-foreground border-border",
   };
 
@@ -238,9 +238,9 @@ export function CrewRoster() {
 export function SystemReadouts() {
   const colorMap = {
     default: "",
-    warn: "[&>div]:bg-[hsl(var(--smui-yellow))]",
-    crit: "[&>div]:bg-[hsl(var(--smui-red))]",
-    ok: "[&>div]:bg-[hsl(var(--smui-green))]",
+    warn: "[&>div]:bg-[hsl(var(--smui-amber))]",
+    crit: "[&>div]:bg-[hsl(var(--smui-crimson))]",
+    ok: "[&>div]:bg-[hsl(var(--smui-terminal))]",
   };
 
   return (
@@ -250,7 +250,7 @@ export function SystemReadouts() {
           system readouts
         </CardTitle>
         <CardDescription className="text-xs flex items-center gap-1">
-          <span className="inline-block w-[5px] h-[5px] rounded-full bg-[hsl(var(--smui-green))]" />
+          <span className="inline-block w-[5px] h-[5px] rounded-full bg-[hsl(var(--smui-terminal))]" />
           nominal
         </CardDescription>
       </CardHeader>
@@ -341,25 +341,25 @@ export function CommsLog() {
         <CardDescription className="text-xs">4 alerts</CardDescription>
       </CardHeader>
       <CardContent className="space-y-1.5">
-        <Alert className="border-[hsl(var(--smui-frost-2)/0.25)] bg-[hsl(var(--smui-frost-2)/0.04)] [&>svg]:text-[hsl(var(--smui-frost-2))]">
+        <Alert variant="cyan">
           <Info className="h-3.5 w-3.5" />
           <div>
-            <AlertTitle className="text-[hsl(var(--smui-frost-2))]">
+            <AlertTitle>
               System Update
             </AlertTitle>
             <AlertDescription>Nav firmware v3.2.1 ready</AlertDescription>
           </div>
         </Alert>
-        <Alert className="border-[hsl(var(--smui-yellow)/0.25)] bg-[hsl(var(--smui-yellow)/0.04)] [&>svg]:text-[hsl(var(--smui-yellow))]">
+        <Alert variant="amber">
           <AlertTriangle className="h-3.5 w-3.5" />
           <div>
-            <AlertTitle className="text-[hsl(var(--smui-yellow))]">
+            <AlertTitle>
               Shield Degradation
             </AlertTitle>
             <AlertDescription>Port shields at 71%</AlertDescription>
           </div>
         </Alert>
-        <Alert variant="destructive">
+        <Alert variant="crimson">
           <XCircle className="h-3.5 w-3.5" />
           <div>
             <AlertTitle>Reactor Warning</AlertTitle>
@@ -368,10 +368,10 @@ export function CommsLog() {
             </AlertDescription>
           </div>
         </Alert>
-        <Alert className="border-[hsl(var(--smui-green)/0.25)] bg-[hsl(var(--smui-green)/0.04)] [&>svg]:text-[hsl(var(--smui-green))]">
+        <Alert variant="terminal">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <div>
-            <AlertTitle className="text-[hsl(var(--smui-green))]">
+            <AlertTitle>
               Dock Confirmed
             </AlertTitle>
             <AlertDescription>
@@ -398,16 +398,16 @@ export function WeaponLoadout() {
           active systems
         </label>
         <div className="flex flex-wrap gap-1 mb-3">
-          <Badge variant="outline" className="text-primary border-primary/30">
+          <Badge variant="crimson">
             railgun
           </Badge>
-          <Badge variant="outline" className="text-primary border-primary/30">
+          <Badge variant="pink">
             missiles
           </Badge>
           <Badge variant="outline" className="text-muted-foreground">
             point def
           </Badge>
-          <Badge variant="outline" className="text-muted-foreground">
+          <Badge variant="cyan">
             ecm suite
           </Badge>
           <Badge variant="outline" className="text-muted-foreground">
@@ -800,10 +800,10 @@ export function CommandPalettePanel() {
 
 export function CargoTable() {
   const typeColors: Record<string, string> = {
-    ore: "text-[hsl(var(--smui-yellow))] border-[hsl(var(--smui-yellow)/0.3)]",
-    wpn: "text-[hsl(var(--smui-red))] border-[hsl(var(--smui-red)/0.3)]",
-    mod: "text-[hsl(var(--smui-frost-3))] border-[hsl(var(--smui-frost-3)/0.3)]",
-    ref: "text-[hsl(var(--smui-green))] border-[hsl(var(--smui-green)/0.3)]",
+    ore: "text-[hsl(var(--smui-amber))] border-[hsl(var(--smui-amber)/0.3)]",
+    wpn: "text-[hsl(var(--smui-crimson))] border-[hsl(var(--smui-crimson)/0.3)]",
+    mod: "text-[hsl(var(--smui-cyan))] border-[hsl(var(--smui-cyan)/0.3)]",
+    ref: "text-[hsl(var(--smui-terminal))] border-[hsl(var(--smui-terminal)/0.3)]",
   };
 
   return (

@@ -18,6 +18,24 @@ const badgeVariants = cva(
           "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         link: "text-primary underline-offset-4 [a&]:hover:underline",
+        terminal:
+          "border-[hsl(var(--smui-terminal)/0.3)] text-[hsl(var(--smui-terminal))] bg-[hsl(var(--smui-terminal)/0.06)]",
+        amber:
+          "border-[hsl(var(--smui-amber)/0.3)] text-[hsl(var(--smui-amber))] bg-[hsl(var(--smui-amber)/0.06)]",
+        cyan:
+          "border-[hsl(var(--smui-cyan)/0.3)] text-[hsl(var(--smui-cyan))] bg-[hsl(var(--smui-cyan)/0.06)]",
+        pink:
+          "border-[hsl(var(--smui-pink)/0.3)] text-[hsl(var(--smui-pink))] bg-[hsl(var(--smui-pink)/0.06)]",
+        magenta:
+          "border-[hsl(var(--smui-magenta)/0.3)] text-[hsl(var(--smui-magenta))] bg-[hsl(var(--smui-magenta)/0.06)]",
+        crimson:
+          "border-[hsl(var(--smui-crimson)/0.3)] text-[hsl(var(--smui-crimson))] bg-[hsl(var(--smui-crimson)/0.06)]",
+        teal:
+          "border-[hsl(var(--smui-teal)/0.3)] text-[hsl(var(--smui-teal))] bg-[hsl(var(--smui-teal)/0.06)]",
+        indigo:
+          "border-[hsl(var(--smui-indigo)/0.3)] text-[hsl(var(--smui-indigo))] bg-[hsl(var(--smui-indigo)/0.06)]",
+        lime:
+          "border-[hsl(var(--smui-lime)/0.3)] text-[hsl(var(--smui-lime))] bg-[hsl(var(--smui-lime)/0.06)]",
       },
     },
     defaultVariants: {

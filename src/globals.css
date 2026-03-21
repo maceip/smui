@@ -25,10 +25,10 @@
 
   /* Chart colors */
   --chart-1: 213 32% 44%;
-  --chart-2: 210 34% 42%;
-  --chart-3: 92 30% 36%;
-  --chart-4: 40 70% 35%;
-  --chart-5: 311 28% 42%;
+  --chart-2: 326 55% 40%;
+  --chart-3: 120 50% 28%;
+  --chart-4: 36 70% 34%;
+  --chart-5: 270 45% 40%;
 
   /* Sidebar */
   --sidebar-background: 218 27% 89%;
@@ -54,6 +54,17 @@
   --smui-yellow: 40 70% 34%;
   --smui-green: 92 35% 34%;
   --smui-purple: 311 28% 40%;
+
+  /* Terminal exotics (darkened for light backgrounds) */
+  --smui-terminal: 120 50% 28%;
+  --smui-amber: 36 70% 34%;
+  --smui-cyan: 180 55% 30%;
+  --smui-pink: 326 55% 40%;
+  --smui-magenta: 270 45% 40%;
+  --smui-crimson: 0 60% 38%;
+  --smui-teal: 168 55% 28%;
+  --smui-indigo: 225 50% 38%;
+  --smui-lime: 78 55% 30%;
 
   /* Surface hierarchy (Snow Storm) */
   --smui-surface-0: 218 27% 94%;
@@ -98,10 +109,10 @@
   --ring: 193 44% 67%;
   --radius: 0rem;
   --chart-1: 193 44% 67%;
-  --chart-2: 213 32% 52%;
-  --chart-3: 92 28% 65%;
-  --chart-4: 40 71% 73%;
-  --chart-5: 311 24% 63%;
+  --chart-2: 326 100% 74%;
+  --chart-3: 120 72% 55%;
+  --chart-4: 36 100% 60%;
+  --chart-5: 270 80% 72%;
   --sidebar-background: 217 16% 15.5%;
   --sidebar-foreground: 213 27% 88%;
   --sidebar-primary: 193 44% 67%;
@@ -123,6 +134,17 @@
   --smui-yellow: 40 71% 73%;
   --smui-green: 92 28% 65%;
   --smui-purple: 311 24% 63%;
+
+  /* Terminal exotics (vivid for dark backgrounds) */
+  --smui-terminal: 120 72% 55%;
+  --smui-amber: 36 100% 60%;
+  --smui-cyan: 180 85% 65%;
+  --smui-pink: 326 100% 74%;
+  --smui-magenta: 270 80% 72%;
+  --smui-crimson: 0 85% 62%;
+  --smui-teal: 168 80% 55%;
+  --smui-indigo: 225 75% 68%;
+  --smui-lime: 78 80% 62%;
 
   /* Surface hierarchy (Polar Night) */
   --smui-surface-0: 213 16% 12%;
