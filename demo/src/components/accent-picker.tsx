@@ -13,6 +13,15 @@ const PRESETS = [
   { name: "Orange", hex: "#d08770" },
   { name: "Red", hex: "#bf616a" },
   { name: "Purple", hex: "#b48ead" },
+  { name: "Terminal", hex: "#45e06b" },
+  { name: "Amber", hex: "#ffa633" },
+  { name: "Cyan", hex: "#4de8e8" },
+  { name: "Pink", hex: "#ff79c6" },
+  { name: "Magenta", hex: "#b07ae8" },
+  { name: "Crimson", hex: "#e84040" },
+  { name: "Teal", hex: "#2cc9a0" },
+  { name: "Indigo", hex: "#6b8fe0" },
+  { name: "Lime", hex: "#96d84a" },
 ];
 
 function hexToHSL(hex: string): string {

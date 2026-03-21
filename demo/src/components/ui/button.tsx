@@ -19,6 +19,16 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        terminal:
+          "bg-[hsl(var(--smui-terminal))] text-black hover:bg-[hsl(var(--smui-terminal)/0.85)]",
+        crimson:
+          "bg-[hsl(var(--smui-crimson))] text-white hover:bg-[hsl(var(--smui-crimson)/0.85)]",
+        pink:
+          "bg-[hsl(var(--smui-pink))] text-black hover:bg-[hsl(var(--smui-pink)/0.85)]",
+        indigo:
+          "bg-[hsl(var(--smui-indigo))] text-white hover:bg-[hsl(var(--smui-indigo)/0.85)]",
+        amber:
+          "bg-[hsl(var(--smui-amber))] text-black hover:bg-[hsl(var(--smui-amber)/0.85)]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

@@ -11,6 +11,18 @@ const alertVariants = cva(
         default: "bg-card text-card-foreground",
         destructive:
           "border-[hsl(var(--smui-red)/0.25)] bg-[hsl(var(--smui-red)/0.04)] text-[hsl(var(--smui-red))] [&>svg]:text-[hsl(var(--smui-red))] *:data-[slot=alert-description]:text-muted-foreground",
+        terminal:
+          "border-[hsl(var(--smui-terminal)/0.25)] bg-[hsl(var(--smui-terminal)/0.04)] text-[hsl(var(--smui-terminal))] [&>svg]:text-[hsl(var(--smui-terminal))] *:data-[slot=alert-description]:text-muted-foreground",
+        amber:
+          "border-[hsl(var(--smui-amber)/0.25)] bg-[hsl(var(--smui-amber)/0.04)] text-[hsl(var(--smui-amber))] [&>svg]:text-[hsl(var(--smui-amber))] *:data-[slot=alert-description]:text-muted-foreground",
+        cyan:
+          "border-[hsl(var(--smui-cyan)/0.25)] bg-[hsl(var(--smui-cyan)/0.04)] text-[hsl(var(--smui-cyan))] [&>svg]:text-[hsl(var(--smui-cyan))] *:data-[slot=alert-description]:text-muted-foreground",
+        pink:
+          "border-[hsl(var(--smui-pink)/0.25)] bg-[hsl(var(--smui-pink)/0.04)] text-[hsl(var(--smui-pink))] [&>svg]:text-[hsl(var(--smui-pink))] *:data-[slot=alert-description]:text-muted-foreground",
+        crimson:
+          "border-[hsl(var(--smui-crimson)/0.25)] bg-[hsl(var(--smui-crimson)/0.04)] text-[hsl(var(--smui-crimson))] [&>svg]:text-[hsl(var(--smui-crimson))] *:data-[slot=alert-description]:text-muted-foreground",
+        indigo:
+          "border-[hsl(var(--smui-indigo)/0.25)] bg-[hsl(var(--smui-indigo)/0.04)] text-[hsl(var(--smui-indigo))] [&>svg]:text-[hsl(var(--smui-indigo))] *:data-[slot=alert-description]:text-muted-foreground",
       },
     },
     defaultVariants: {
