@@ -1,6 +1,6 @@
 {
   "name": "spacemolt-theme",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SpaceMolt UI theme for shadcn/ui - Nord-inspired dark terminal aesthetic",
   "license": "Unlicense",
   "repository": {
