@@ -54,6 +54,7 @@ interface PaneGroupContext {
   unregisterPane: (id: string) => void
   registerHandle: (id: string, index: number) => void
   paneIds: React.RefObject<string[]>
+  collapsedPanes: Set<string>
 }
 
 const PaneGroupCtx = React.createContext<PaneGroupContext | null>(null)
@@ -91,8 +92,12 @@ function PaneGroup({
   const sizesRef = React.useRef(sizes)
   sizesRef.current = sizes
 
-  // Collapsed state per pane
+  // Collapsed state per pane + pre-collapse size memory
   const [collapsed, setCollapsed] = React.useState<Set<string>>(new Set())
+  const preCollapseSizes = React.useRef<Map<string, number>>(new Map())
+
+  // Track which handle index is actively being dragged
+  const [draggingHandle, setDraggingHandle] = React.useState<number | null>(null)
 
   // Active drag state
   const dragState = React.useRef<{
@@ -228,6 +233,7 @@ function PaneGroup({
 
       const target = e.currentTarget as HTMLElement
       target.setPointerCapture(e.pointerId)
+      setDraggingHandle(handleIndex)
     },
     [direction]
   )
@@ -302,6 +308,7 @@ function PaneGroup({
     document.body.style.userSelect = ""
     commitSizes(new Map(sizesRef.current))
     dragState.current = null
+    setDraggingHandle(null)
   }, [commitSizes])
 
   // Double-click to collapse/expand
@@ -336,22 +343,24 @@ function PaneGroup({
       const isCollapsed = collapsed.has(target)
 
       if (isCollapsed) {
-        // Expand: restore to default or equal share
-        const restoreSize = targetCfg.defaultSize ?? 50
+        // Expand: restore to pre-collapse size (remembered) or default
+        const restoreSize = preCollapseSizes.current.get(target) ?? targetCfg.defaultSize ?? 50
         const currentNeighbor = newSizes.get(neighbor) ?? 50
         const currentTarget = newSizes.get(target) ?? 0
         const total = currentNeighbor + currentTarget
         newSizes.set(target, Math.min(restoreSize, total - (targetCfg.minSize ?? 5)))
         newSizes.set(neighbor, total - (newSizes.get(target) ?? 0))
+        preCollapseSizes.current.delete(target)
         setCollapsed((s) => {
           const next = new Set(s)
           next.delete(target)
           return next
         })
       } else {
-        // Collapse
-        const collapsedSize = targetCfg.collapsedSize
+        // Remember current size before collapsing
         const currentTarget = newSizes.get(target) ?? 50
+        preCollapseSizes.current.set(target, currentTarget)
+        const collapsedSize = targetCfg.collapsedSize
         const currentNeighbor = newSizes.get(neighbor) ?? 50
         newSizes.set(target, collapsedSize)
         newSizes.set(neighbor, currentNeighbor + currentTarget - collapsedSize)
@@ -428,6 +437,7 @@ function PaneGroup({
         React.cloneElement(child as React.ReactElement<Record<string, unknown>>, {
           key: `handle-${hi}`,
           "data-handle-index": hi,
+          "data-dragging": draggingHandle === hi || undefined,
           onPointerDown: (e: React.PointerEvent) => handlePointerDown(e, hi),
           onPointerMove: (e: React.PointerEvent) => handlePointerMove(e),
           onPointerUp: () => handlePointerUp(),
@@ -457,8 +467,9 @@ function PaneGroup({
       unregisterPane,
       registerHandle,
       paneIds,
+      collapsedPanes: collapsed,
     }),
-    [direction, registerPane, unregisterPane, registerHandle]
+    [direction, registerPane, unregisterPane, registerHandle, collapsed]
   )
 
   return (
@@ -496,8 +507,9 @@ function Pane({
   style,
   ...props
 }: PaneProps) {
-  const { direction, registerPane, unregisterPane } = usePaneGroup()
+  const { direction, registerPane, unregisterPane, collapsedPanes } = usePaneGroup()
   const id = React.useRef(`pane-${++paneCounter}`).current
+  const isCollapsed = collapsedPanes.has(id)
 
   React.useEffect(() => {
     registerPane(id, { defaultSize, minSize, maxSize, collapsible, collapsedSize })
@@ -510,7 +522,12 @@ function Pane({
     <div
       data-slot="pane"
       data-pane-id={id}
-      className={cn("overflow-auto", className)}
+      data-state={isCollapsed ? "collapsed" : "expanded"}
+      className={cn(
+        "overflow-hidden transition-[flex-basis] duration-150",
+        isCollapsed ? "overflow-hidden" : "",
+        className
+      )}
       style={{
         ...style,
         [direction === "horizontal" ? "width" : "height"]: sizeVar,
@@ -519,7 +536,7 @@ function Pane({
       }}
       {...props}
     >
-      {children}
+      <div className="h-full w-full overflow-auto">{children}</div>
     </div>
   )
 }
@@ -546,14 +563,15 @@ function PaneHandle({
       data-direction={direction}
       data-disabled={disabled || undefined}
       className={cn(
-        "relative flex-shrink-0 select-none touch-none",
-        "bg-border transition-colors",
-        "hover:bg-[hsl(var(--smui-border-hover))]",
-        "focus-visible:outline-none focus-visible:bg-primary focus-visible:ring-1 focus-visible:ring-ring",
-        "active:bg-primary",
+        "group/handle relative flex-shrink-0 select-none touch-none",
+        "bg-border transition-[background-color,box-shadow,width,height] duration-150",
+        "hover:bg-[hsl(var(--smui-frost-2))] hover:shadow-[0_0_6px_hsl(var(--smui-frost-2)/0.4)]",
+        "focus-visible:outline-none focus-visible:bg-ring focus-visible:shadow-[0_0_6px_hsl(var(--smui-frost-2)/0.4)]",
+        "active:bg-primary active:shadow-[0_0_8px_hsl(var(--smui-frost-2)/0.6)]",
+        "data-[dragging=true]:bg-primary data-[dragging=true]:shadow-[0_0_8px_hsl(var(--smui-frost-2)/0.6)]",
         isHorizontal
-          ? "w-px cursor-col-resize hover:w-[3px] active:w-[3px] focus-visible:w-[3px]"
-          : "h-px cursor-row-resize hover:h-[3px] active:h-[3px] focus-visible:h-[3px]",
+          ? "w-px cursor-col-resize hover:w-[3px] active:w-[3px] focus-visible:w-[3px] data-[dragging=true]:w-[3px]"
+          : "h-px cursor-row-resize hover:h-[3px] active:h-[3px] focus-visible:h-[3px] data-[dragging=true]:h-[3px]",
         disabled && "pointer-events-none opacity-30",
         className
       )}
@@ -575,9 +593,9 @@ function PaneHandle({
           isHorizontal ? "flex-col gap-[3px]" : "flex-row gap-[3px]"
         )}
       >
-        <span className="block w-[3px] h-[3px] rounded-full bg-muted-foreground/40" />
-        <span className="block w-[3px] h-[3px] rounded-full bg-muted-foreground/40" />
-        <span className="block w-[3px] h-[3px] rounded-full bg-muted-foreground/40" />
+        <span className="block w-[3px] h-[3px] rounded-full bg-muted-foreground/30 group-hover/handle:bg-muted-foreground/60 transition-colors" />
+        <span className="block w-[3px] h-[3px] rounded-full bg-muted-foreground/30 group-hover/handle:bg-muted-foreground/60 transition-colors" />
+        <span className="block w-[3px] h-[3px] rounded-full bg-muted-foreground/30 group-hover/handle:bg-muted-foreground/60 transition-colors" />
       </div>
     </div>
   )
