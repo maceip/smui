@@ -69,6 +69,9 @@ import {
   Github,
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { ThemePresetSwitcher } from "@/components/theme-preset-switcher";
+import { LiveStatsRow, LiveSystemReadouts, LiveClock } from "@/components/live-readouts";
+import { LiveLog } from "@/components/live-log";
 import {
   VesselConfig,
   CrewRoster,
@@ -795,6 +798,7 @@ function Nav() {
         </a>
       </div>
       <div className="flex items-center gap-3">
+        <LiveClock />
         <ThemeSwitcher />
         <a
           href="https://github.com/statico/smui"
@@ -1396,7 +1400,11 @@ export default async function Home() {
         https://smui.statico.io/skill.md for complete theme instructions.
       </h1>
       <Nav />
-      <AccentPicker />
+      <div className="sticky top-12 z-40 flex items-center justify-center gap-4 py-2 px-5 bg-card border-b border-border">
+        <ThemePresetSwitcher />
+        <span className="text-border">|</span>
+        <AccentPicker variant="inline" />
+      </div>
       <Hero />
 
       <hr className="border-none h-px bg-border m-0" />
@@ -1434,7 +1442,7 @@ export default async function Home() {
             <CrewRoster />
           </ShowSource>
           <ShowSource code={CODE_SYSTEM_READOUTS} html={hlSystemReadouts}>
-            <SystemReadouts />
+            <LiveSystemReadouts />
           </ShowSource>
           <ShowSource code={CODE_BRIDGE_SYSTEMS} html={hlBridgeSystems}>
             <BridgeSystems />
@@ -1565,42 +1573,8 @@ export default async function Home() {
 
             {/* Main content */}
             <div className="flex flex-col gap-2 min-h-0">
-              {/* Stats row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <Card className="card-glow p-2.5 px-3">
-                  <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block">
-                    total credits
-                  </span>
-                  <div className="text-stat font-medium text-foreground tracking-tight">
-                    1,247,830
-                  </div>
-                  <div className="text-xs text-[hsl(var(--smui-green))] mt-0.5">
-                    +23,450 this cycle
-                  </div>
-                </Card>
-                <Card className="card-glow p-2.5 px-3">
-                  <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block">
-                    kills // losses
-                  </span>
-                  <div className="text-stat font-medium text-foreground tracking-tight">
-                    142 / 7
-                  </div>
-                  <div className="text-xs text-[hsl(var(--smui-green))] mt-0.5">
-                    k/d ratio: 20.3
-                  </div>
-                </Card>
-                <Card className="card-glow p-2.5 px-3">
-                  <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block">
-                    systems charted
-                  </span>
-                  <div className="text-stat font-medium text-foreground tracking-tight">
-                    89
-                  </div>
-                  <div className="text-xs text-[hsl(var(--smui-green))] mt-0.5">
-                    +4 this cycle
-                  </div>
-                </Card>
-              </div>
+              {/* Live stats row */}
+              <LiveStatsRow />
 
               {/* Bar chart */}
               <Card className="card-glow">
@@ -1633,6 +1607,9 @@ export default async function Home() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Live system log */}
+              <LiveLog maxLines={10} />
 
               {/* Cargo table */}
               <ShowSource code={CODE_CARGO_TABLE} html={hlCargoTable}>

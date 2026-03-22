@@ -1,3 +1,4 @@
+import { PersistedInput, PersistedTextarea } from "@/components/persisted-fields";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -156,7 +157,7 @@ export function VesselConfig() {
             <label className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
               vessel name
             </label>
-            <Input defaultValue="ISS EREBUS" />
+            <PersistedInput persistKey="vessel-name" defaultValue="ISS EREBUS" />
           </div>
           <div>
             <label className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
@@ -171,13 +172,13 @@ export function VesselConfig() {
             <label className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
               reg code
             </label>
-            <Input defaultValue="NCC-48271" />
+            <PersistedInput persistKey="reg-code" defaultValue="NCC-48271" />
           </div>
           <div>
             <label className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
               sector
             </label>
-            <Input defaultValue="GAMMA-7" />
+            <PersistedInput persistKey="sector" defaultValue="GAMMA-7" />
           </div>
         </div>
         <Button size="sm" className="w-full mt-2.5">
@@ -570,7 +571,7 @@ export function TextareaAvatarBreadcrumb() {
         <label className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
           ship log entry
         </label>
-        <Textarea defaultValue="Arrived at Station Helix, Gamma Draconis system. Docked at Bay 7. Hull integrity nominal. Offloading palladium ore." />
+        <PersistedTextarea persistKey="ship-log" defaultValue="Arrived at Station Helix, Gamma Draconis system. Docked at Bay 7. Hull integrity nominal. Offloading palladium ore." />
       </CardContent>
     </Card>
   );

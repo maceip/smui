@@ -88,7 +88,7 @@ export function AccentPicker({
   variant = "bar",
   initialAccent,
 }: {
-  variant?: "bar" | "grid";
+  variant?: "bar" | "grid" | "inline";
   initialAccent?: string;
 }) {
   const defaultColor = initialAccent && /^#[0-9a-fA-F]{6}$/.test(initialAccent)
@@ -140,6 +140,33 @@ export function AccentPicker({
   }, [defaultColor, applyAccent]);
 
   const activeBorder = mounted && resolvedTheme === "dark" ? "#fff" : "#2e3440";
+
+  if (variant === "inline") {
+    return (
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground tracking-widest uppercase">
+        <span>accent</span>
+        {PRESETS.map((p) => (
+          <button
+            key={p.hex}
+            title={p.name}
+            onClick={() => applyAccent(p.hex)}
+            className="w-[18px] h-[18px] border-2 cursor-pointer transition-colors"
+            style={{
+              backgroundColor: p.hex,
+              borderColor: active === p.hex ? activeBorder : "transparent",
+            }}
+          />
+        ))}
+        <input
+          type="color"
+          value={active}
+          onChange={(e) => applyAccent(e.target.value)}
+          title="Custom accent"
+          className="w-[18px] h-[18px] border border-border cursor-pointer bg-transparent p-0 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none"
+        />
+      </div>
+    );
+  }
 
   if (variant === "grid") {
     return (
