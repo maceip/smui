@@ -34,6 +34,10 @@ import {
   FloatingCompletion,
   type CompletionItem,
 } from "@/components/ui/floating-completion";
+import { PaneGroup, Pane, PaneHandle } from "@/components/ui/resizable-panes";
+import { Gauge } from "@/components/ui/gauge";
+import { Sparkline } from "@/components/ui/sparkline";
+import { useDialKit } from "dialkit";
 import {
   Compass,
   Crosshair,
@@ -176,6 +180,234 @@ const COMPLETION_ITEMS: CompletionItem[] = [
   { name: "npm install", description: "add packages", icon: "▪", color: "pink" },
   { name: "npm run dev", description: "start dev server", icon: "▪", color: "pink" },
 ];
+
+/* ------------------------------------------------------------------ */
+/*  Gauge + Sparkline demo with DialKit                                */
+/* ------------------------------------------------------------------ */
+
+const SPARK_DATA = [12, 18, 14, 22, 19, 28, 24, 32, 29, 38, 35, 42, 39, 45, 48, 44, 52, 49, 55];
+const SPARK_BARS = [
+  { value: 45 }, { value: 62 }, { value: 38 }, { value: 80, color: "amber" },
+  { value: 55 }, { value: 70 }, { value: 48, color: "cyan" }, { value: 90 },
+  { value: 65 }, { value: 78 }, { value: 52, color: "pink" }, { value: 95 },
+];
+
+function GaugeSparklineDemo() {
+  const dial = useDialKit("Gauge & Sparkline", {
+    gauge: {
+      value: [72, 0, 100],
+      sweep: [270, 90, 360],
+      strokeWidth: [4, 1, 12],
+      animated: true,
+      showValue: true,
+    },
+    sparkline: {
+      showEndDot: true,
+      animated: true,
+      variant: { type: "select" as const, options: ["line", "area", "bar"], default: "area" },
+    },
+  });
+
+  return (
+    <Card className="card-glow">
+      <CardHeader className="py-2.5 px-3.5">
+        <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+          component // gauge + sparkline
+        </CardTitle>
+        <CardDescription className="text-xs">
+          live-tweakable via DialKit panel (bottom-right)
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="bg-black/35 p-6">
+          {/* Gauges row */}
+          <div className="flex items-center gap-6 mb-6 flex-wrap">
+            <Gauge
+              value={dial.gauge.value as number}
+              sweep={dial.gauge.sweep as number}
+              strokeWidth={dial.gauge.strokeWidth as number}
+              animated={dial.gauge.animated as boolean}
+              showValue={dial.gauge.showValue as boolean}
+              color="cyan"
+              label="reactor"
+              size="lg"
+              thresholds={[
+                { value: 30, color: "crimson", label: "low" },
+                { value: 80, color: "amber", label: "high" },
+              ]}
+            />
+            <Gauge
+              value={91}
+              color="terminal"
+              label="shields"
+              size="md"
+              strokeWidth={dial.gauge.strokeWidth as number}
+              sweep={dial.gauge.sweep as number}
+              animated={dial.gauge.animated as boolean}
+              showValue={dial.gauge.showValue as boolean}
+            />
+            <Gauge
+              value={34}
+              color="amber"
+              label="fuel"
+              size="md"
+              strokeWidth={dial.gauge.strokeWidth as number}
+              sweep={dial.gauge.sweep as number}
+              animated={dial.gauge.animated as boolean}
+              showValue={dial.gauge.showValue as boolean}
+              thresholds={[{ value: 25, color: "crimson" }]}
+            />
+            <Gauge
+              value={67}
+              color="pink"
+              label="cargo"
+              size="sm"
+              strokeWidth={dial.gauge.strokeWidth as number}
+              sweep={dial.gauge.sweep as number}
+              animated={dial.gauge.animated as boolean}
+              showValue={dial.gauge.showValue as boolean}
+            />
+          </div>
+
+          {/* Sparklines */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="text-label text-muted-foreground tracking-[1.5px] uppercase w-20">
+                yield
+              </span>
+              <Sparkline
+                data={SPARK_DATA}
+                variant={(dial.sparkline.variant as "line" | "area" | "bar") || "area"}
+                color="cyan"
+                width={200}
+                height={28}
+                showEndDot={dial.sparkline.showEndDot as boolean}
+                animated={dial.sparkline.animated as boolean}
+                referenceLine={35}
+                referenceColor="amber"
+              />
+              <span className="text-ui text-[hsl(var(--smui-green))]">+14.2%</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-label text-muted-foreground tracking-[1.5px] uppercase w-20">
+                power
+              </span>
+              <Sparkline
+                data={SPARK_BARS}
+                variant="bar"
+                color="terminal"
+                width={200}
+                height={28}
+                animated={dial.sparkline.animated as boolean}
+              />
+              <span className="text-ui text-[hsl(var(--smui-amber))]">78 MW</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-label text-muted-foreground tracking-[1.5px] uppercase w-20">
+                comms
+              </span>
+              <Sparkline
+                data={[5, 8, 3, 12, 7, 15, 9, 18, 11, 20, 14, 22]}
+                variant="line"
+                color="pink"
+                width={200}
+                height={28}
+                showEndDot
+                showRange
+                animated={dial.sparkline.animated as boolean}
+              />
+              <span className="text-ui text-muted-foreground">22 msg/s</span>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Resizable Panes demo                                               */
+/* ------------------------------------------------------------------ */
+
+function ResizablePanesDemo() {
+  const dial = useDialKit("Resizable Panes", {
+    direction: { type: "select" as const, options: ["horizontal", "vertical"], default: "horizontal" },
+    minSize: [10, 0, 40],
+    collapsible: true,
+  });
+
+  const dir = (dial.direction as string) === "vertical" ? "vertical" : "horizontal" as const;
+
+  return (
+    <Card className="card-glow">
+      <CardHeader className="py-2.5 px-3.5">
+        <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+          component // resizable panes
+        </CardTitle>
+        <CardDescription className="text-xs">
+          drag handles to resize · double-click to collapse · keyboard accessible
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="bg-black/35" style={{ height: 280 }}>
+          <PaneGroup direction={dir} className="h-full">
+            <Pane
+              defaultSize={30}
+              minSize={dial.minSize as number}
+              collapsible={dial.collapsible as boolean}
+              className="p-3"
+            >
+              <div className="text-label text-muted-foreground tracking-[1.5px] uppercase mb-2">
+                panel a
+              </div>
+              <div className="space-y-1.5 text-ui">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-[hsl(var(--smui-green))]" />
+                  reactor online
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-[hsl(var(--smui-green))]" />
+                  shields online
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-[hsl(var(--smui-amber))]" />
+                  weapons standby
+                </div>
+              </div>
+            </Pane>
+            <PaneHandle />
+            <Pane defaultSize={45} minSize={dial.minSize as number} className="p-3">
+              <div className="text-label text-muted-foreground tracking-[1.5px] uppercase mb-2">
+                panel b // main display
+              </div>
+              <div className="text-ui text-muted-foreground">
+                <p>Drag the handle between panels to resize.</p>
+                <p className="mt-1">Hold <kbd className="px-1 border border-border bg-background text-label">Shift</kbd> + arrow keys for 5% steps.</p>
+                <p className="mt-1">Double-click handle to collapse adjacent panel.</p>
+                <div className="mt-3 flex gap-2">
+                  <Sparkline data={SPARK_DATA} variant="area" color="cyan" width={120} height={20} animated />
+                  <Sparkline data={[8,12,6,14,10,16,12,18]} variant="line" color="terminal" width={120} height={20} showEndDot />
+                </div>
+              </div>
+            </Pane>
+            <PaneHandle />
+            <Pane
+              defaultSize={25}
+              minSize={dial.minSize as number}
+              collapsible={dial.collapsible as boolean}
+              className="p-3"
+            >
+              <div className="text-label text-muted-foreground tracking-[1.5px] uppercase mb-2">
+                panel c
+              </div>
+              <Gauge value={72} color="cyan" size="sm" label="cpu" strokeWidth={3} />
+            </Pane>
+          </PaneGroup>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function DashboardPage() {
   const [completionQuery, setCompletionQuery] = useState("");
@@ -511,6 +743,12 @@ export default function DashboardPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Gauge + Sparkline + DialKit */}
+            <GaugeSparklineDemo />
+
+            {/* Resizable Panes */}
+            <ResizablePanesDemo />
 
           </div>
         </div>
