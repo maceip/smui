@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import { AccentPicker } from "@/components/accent-picker";
 import { Button } from "@/components/ui/button";
@@ -29,6 +31,10 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import {
+  FloatingCompletion,
+  type CompletionItem,
+} from "@/components/ui/floating-completion";
+import {
   Compass,
   Crosshair,
   Wrench,
@@ -40,6 +46,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { useState, useCallback } from "react";
 
 function Nav() {
   return (
@@ -145,7 +152,42 @@ const BAR_DATA = [
   { label: "12", height: 95, alt: false },
 ];
 
+const COMPLETION_ITEMS: CompletionItem[] = [
+  { name: "git commit", description: "record changes", icon: "⬡", color: "terminal" },
+  { name: "git push", description: "update remote", icon: "⬡", color: "terminal" },
+  { name: "git pull", description: "fetch & merge", icon: "⬡", color: "terminal" },
+  { name: "git stash", description: "shelve changes", icon: "⬡", color: "terminal" },
+  { name: "git branch", description: "list branches", icon: "⬡", color: "terminal" },
+  { name: "git checkout", description: "switch branch", icon: "⬡", color: "amber" },
+  { name: "git rebase", description: "reapply commits", icon: "⬡", color: "crimson" },
+  { name: "git log", description: "show history", icon: "⬡", color: "cyan" },
+  { name: "git diff", description: "show changes", icon: "⬡", color: "cyan" },
+  { name: "git merge", description: "join branches", icon: "⬡", color: "amber" },
+  { name: "git remote", description: "manage remotes", icon: "⬡", color: "indigo" },
+  { name: "git tag", description: "create tag", icon: "⬡", color: "pink" },
+  { name: "git cherry-pick", description: "apply commit", icon: "⬡", color: "magenta" },
+  { name: "git reset", description: "unstage changes", icon: "⬡", color: "crimson" },
+  { name: "git status", description: "working tree", icon: "⬡", color: "teal" },
+  { name: "cargo build", description: "compile project", icon: "◆", color: "amber" },
+  { name: "cargo test", description: "run tests", icon: "◆", color: "lime" },
+  { name: "cargo run", description: "execute binary", icon: "◆", color: "lime" },
+  { name: "docker build", description: "build image", icon: "◇", color: "cyan" },
+  { name: "docker run", description: "create container", icon: "◇", color: "cyan" },
+  { name: "npm install", description: "add packages", icon: "▪", color: "pink" },
+  { name: "npm run dev", description: "start dev server", icon: "▪", color: "pink" },
+];
+
 export default function DashboardPage() {
+  const [completionQuery, setCompletionQuery] = useState("");
+  const [completionOpen, setCompletionOpen] = useState(false);
+  const [completionValue, setCompletionValue] = useState("");
+
+  const handleCompletionSelect = useCallback((item: CompletionItem) => {
+    setCompletionValue(item.name);
+    setCompletionQuery(item.name);
+    setCompletionOpen(false);
+  }, []);
+
   const typeColors: Record<string, string> = {
     ore: "text-[hsl(var(--smui-yellow))] border-[hsl(var(--smui-yellow)/0.3)]",
     wpn: "text-[hsl(var(--smui-red))] border-[hsl(var(--smui-red)/0.3)]",
@@ -424,6 +466,52 @@ export default function DashboardPage() {
                 </div>
               </CardContent>
             </Card>
+            {/* Floating Completion */}
+            <Card className="card-glow">
+              <CardHeader className="py-2.5 px-3.5">
+                <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+                  component // floating completion
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  melon-style autocomplete — fuzzy filter, keyboard nav, collision-aware
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="bg-black/35 p-6">
+                  <div className="max-w-[400px]">
+                    <label className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
+                      command
+                    </label>
+                    <FloatingCompletion
+                      items={COMPLETION_ITEMS}
+                      query={completionQuery}
+                      open={completionOpen}
+                      onSelect={handleCompletionSelect}
+                      onDismiss={() => setCompletionOpen(false)}
+                      maxVisible={8}
+                      className="w-full"
+                    >
+                      <Input
+                        value={completionValue}
+                        placeholder="type a command... (try 'git', 'cargo', 'doc')"
+                        onChange={(e) => {
+                          setCompletionValue(e.target.value);
+                          setCompletionQuery(e.target.value);
+                          setCompletionOpen(e.target.value.length > 0);
+                        }}
+                        onFocus={() => {
+                          if (completionValue.length > 0) setCompletionOpen(true);
+                        }}
+                      />
+                    </FloatingCompletion>
+                    <p className="text-label text-muted-foreground mt-2">
+                      ↑↓ navigate · tab next · enter accept · esc dismiss · fuzzy matching highlights chars
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
         </div>
       </section>
