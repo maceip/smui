@@ -1,7 +1,32 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { ITheme } from "@xterm/xterm"
+
+/** Matches xterm's TerminalTheme — inlined to avoid hard dependency on @xterm/xterm */
+interface TerminalTheme {
+  background?: string
+  foreground?: string
+  cursor?: string
+  cursorAccent?: string
+  selectionBackground?: string
+  selectionForeground?: string
+  black?: string
+  red?: string
+  green?: string
+  yellow?: string
+  blue?: string
+  magenta?: string
+  cyan?: string
+  white?: string
+  brightBlack?: string
+  brightRed?: string
+  brightGreen?: string
+  brightYellow?: string
+  brightBlue?: string
+  brightMagenta?: string
+  brightCyan?: string
+  brightWhite?: string
+}
 
 /* ------------------------------------------------------------------ */
 /*  HSL → hex conversion (reads raw "H S% L%" triplets from CSS vars) */
@@ -37,10 +62,10 @@ function resolvedHex(name: string): string {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Build xterm ITheme from SMUI CSS custom properties                 */
+/*  Build xterm TerminalTheme from SMUI CSS custom properties                 */
 /* ------------------------------------------------------------------ */
 
-function buildTheme(): ITheme {
+function buildTheme(): TerminalTheme {
   // Base background/foreground from shadcn vars (already hsl() wrapped)
   const bg = getComputedStyle(document.documentElement)
     .getPropertyValue("--background")
@@ -90,7 +115,7 @@ function buildTheme(): ITheme {
 /* ------------------------------------------------------------------ */
 
 export function useTerminalTheme() {
-  const [theme, setTheme] = useState<ITheme>({})
+  const [theme, setTheme] = useState<TerminalTheme>({})
   const observerRef = useRef<MutationObserver | null>(null)
 
   const refresh = useCallback(() => {

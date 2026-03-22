@@ -8,6 +8,14 @@ import { useTerminalTheme } from "@/hooks/use-terminal-theme"
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Minimal type for the xterm Terminal instance exposed via onReady.
+ * Using a local interface avoids a hard dependency on @xterm/xterm types.
+ * Consumers who have @xterm/xterm installed get full types via the actual class.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type XTerminal = any
+
 interface TerminalProps extends React.ComponentProps<"div"> {
   /** Font size in pixels (default 13, matches --text-ui) */
   fontSize?: number
@@ -24,7 +32,7 @@ interface TerminalProps extends React.ComponentProps<"div"> {
   /** Enable WebGL renderer for performance (default true) */
   webgl?: boolean
   /** Called when the xterm instance is ready */
-  onReady?: (terminal: import("@xterm/xterm").Terminal) => void
+  onReady?: (terminal: XTerminal) => void
   /** Called when terminal data is produced (user types) */
   onData?: (data: string) => void
   /** Called on terminal title change */
@@ -50,8 +58,9 @@ function Terminal({
   ...props
 }: TerminalProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
-  const termRef = React.useRef<import("@xterm/xterm").Terminal | null>(null)
-  const fitAddonRef = React.useRef<import("@xterm/addon-fit").FitAddon | null>(null)
+  const termRef = React.useRef<XTerminal>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fitAddonRef = React.useRef<any>(null)
   const theme = useTerminalTheme()
 
   // Apply theme updates reactively
@@ -69,9 +78,33 @@ function Terminal({
     let disposed = false
 
     async function init() {
-      const { Terminal: XTerm } = await import("@xterm/xterm")
-      const { FitAddon } = await import("@xterm/addon-fit")
+      const [{ Terminal: XTerm }, { FitAddon }] = await Promise.all([
+        import("@xterm/xterm"),
+        import("@xterm/addon-fit"),
+      ])
       const el = container
+
+      // Inject xterm base CSS once (idempotent).
+      // We inline the critical styles so consumers don't need a separate CSS import.
+      if (!document.querySelector("style[data-xterm-css]")) {
+        const style = document.createElement("style")
+        style.setAttribute("data-xterm-css", "")
+        style.textContent = [
+          ".xterm { position: relative; user-select: none; -ms-user-select: none; -webkit-user-select: none; cursor: text; }",
+          ".xterm.focus, .xterm:focus { outline: none; }",
+          ".xterm .xterm-helpers { position: absolute; top: 0; z-index: 5; }",
+          ".xterm .xterm-helper-textarea { padding: 0; border: 0; margin: 0; position: absolute; opacity: 0; left: -9999em; top: 0; width: 0; height: 0; z-index: -5; white-space: nowrap; overflow: hidden; resize: none; }",
+          ".xterm .composition-view { display: none; position: absolute; white-space: nowrap; z-index: 1; }",
+          ".xterm .xterm-viewport { background-color: transparent !important; overflow-y: scroll; cursor: default; position: absolute; right: 0; left: 0; top: 0; bottom: 0; scrollbar-width: thin; }",
+          ".xterm .xterm-screen { position: relative; }",
+          ".xterm .xterm-screen canvas { position: absolute; left: 0; top: 0; }",
+          ".xterm .xterm-decoration-container .xterm-decoration { z-index: 6; position: absolute; }",
+          ".xterm .xterm-decoration-container .xterm-decoration.xterm-decoration-top-layer { z-index: 7; }",
+          ".xterm .xterm-decoration-overview-ruler { z-index: 8; position: absolute; top: 0; right: 0; pointer-events: none; }",
+          ".xterm .xterm-cursor-layer { z-index: 20; }",
+        ].join("\n")
+        document.head.appendChild(style)
+      }
 
       if (disposed) return
 
