@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { DialProvider } from "@/components/dial-provider";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className={`${jetbrainsMono.className} antialiased`}>
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
+          <DialProvider />
         </ThemeProvider>
       </body>
     </html>
