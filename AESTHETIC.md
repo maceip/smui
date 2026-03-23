@@ -161,21 +161,33 @@ For inline usage with alpha, use the raw HSL triplet: `text-[hsl(var(--smui-gree
 
 ## Typography
 
-### Font
+### Fonts
 
-JetBrains Mono is the only font. It is used for both `--font-sans` and `--font-mono`. All text is monospace.
+SMUI uses a dual-font system for visual hierarchy:
 
-Load it in your layout:
+- **Primary (sans)**: **Space Grotesk** — geometric, techy sans-serif used for headings, stats, and hero text (`--font-sans`)
+- **Secondary (mono)**: **JetBrains Mono** — monospace used for labels, body text, UI elements, code, and table data (`--font-mono`)
+
+The body defaults to monospace. Display-size text (`text-heading`, `text-stat`, `text-hero`) automatically uses the sans font.
+
+Load both in your layout:
 
 ```tsx
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 
 const mono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
 
-// Apply as: <body className={mono.className}>
+const sans = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+// Apply as: <body className={`${mono.className} ${sans.variable}`}>
 ```
 
 ### Typography Scale Variables
