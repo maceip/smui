@@ -4,7 +4,8 @@
   "type": "registry:theme",
   "cssVars": {
     "theme": {
-      "font-sans": "'JetBrains Mono', monospace"
+      "font-sans": "'Space Grotesk', sans-serif",
+      "font-mono": "'JetBrains Mono', monospace"
     },
     "light": {
       "background": "213 16% 12%",
