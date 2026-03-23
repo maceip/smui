@@ -90,33 +90,33 @@ In light mode (`:root`), colors are adjusted for contrast against Snow Storm bac
 |---|---|---|---|
 | `--background` | `218 27% 94%` | `#eceff4` | Page background (Snow Storm 3) |
 | `--foreground` | `220 16% 22%` | `#2e3440` | Primary text (Polar Night 1) |
-| `--card` | `218 27% 92%` | `#e5e9f0` | Card/panel backgrounds (Snow Storm 2) |
-| `--primary` | `213 32% 44%` | `#4c6d94` | Primary accent (Frost 4, darkened for WCAG contrast) |
-| `--muted-foreground` | `220 17% 36%` | `#4c566a` | Muted text (Polar Night 4) |
-| `--border` | `219 18% 80%` | `#c9cfda` | Borders |
+| `--card` | `218 27% 89%` | `#d8dee9` | Card/panel backgrounds (Snow Storm 2, darkened) |
+| `--primary` | `213 32% 40%` | `#456487` | Primary accent (Frost 4, darkened for WCAG contrast) |
+| `--muted-foreground` | `220 17% 28%` | `#3b4252` | Muted text (Polar Night, darkened) |
+| `--border` | `219 18% 72%` | `#a8b1c1` | Borders |
 
 #### Light Mode Extended Colors
 
 | Variable | HSL | Hex | Notes |
 |---|---|---|---|
-| `--smui-frost-1` | `176 30% 40%` | `#478c89` | Darkened teal |
-| `--smui-frost-2` | `193 40% 42%` | `#407a95` | Darkened frost blue |
-| `--smui-frost-3` | `210 34% 45%` | `#4c6d8e` | Darkened steel |
-| `--smui-frost-4` | `213 32% 40%` | `#456487` | Darkened deep blue |
-| `--smui-green` | `92 35% 38%` | `#558040` | Darkened success |
-| `--smui-yellow` | `40 70% 38%` | `#a57e1d` | Darkened warning |
-| `--smui-orange` | `14 55% 48%` | `#be5637` | Darkened alert |
-| `--smui-red` | `355 55% 48%` | `#be3744` | Darkened danger |
-| `--smui-purple` | `311 28% 45%` | `#8d5283` | Darkened info |
+| `--smui-frost-1` | `176 30% 35%` | `#3e7a77` | Darkened teal |
+| `--smui-frost-2` | `193 40% 38%` | `#3a6f89` | Darkened frost blue |
+| `--smui-frost-3` | `210 34% 40%` | `#435f80` | Darkened steel |
+| `--smui-frost-4` | `213 32% 36%` | `#3e5a79` | Darkened deep blue |
+| `--smui-green` | `92 35% 34%` | `#4b7238` | Darkened success |
+| `--smui-yellow` | `40 70% 34%` | `#937119` | Darkened warning |
+| `--smui-orange` | `14 55% 44%` | `#ae4d30` | Darkened alert |
+| `--smui-red` | `355 55% 44%` | `#ae323e` | Darkened danger |
+| `--smui-purple` | `311 28% 40%` | `#824a78` | Darkened info |
 
 #### Light Mode Surface Hierarchy
 
 | Variable | HSL | Hex | Usage |
 |---|---|---|---|
 | `--smui-surface-0` | `218 27% 94%` | `#eceff4` | Page background |
-| `--smui-surface-1` | `218 27% 92%` | `#e5e9f0` | Cards, panels |
-| `--smui-surface-2` | `219 28% 88%` | `#d8dee9` | Elevated elements |
-| `--smui-surface-3` | `219 20% 82%` | `#c9cfda` | Highlights, active states |
+| `--smui-surface-1` | `218 27% 89%` | `#d8dee9` | Cards, panels |
+| `--smui-surface-2` | `219 28% 84%` | `#c8d0de` | Elevated elements |
+| `--smui-surface-3` | `219 20% 76%` | `#b3bbc9` | Highlights, active states |
 
 ### Theme Switching
 
