@@ -256,10 +256,23 @@
   100% { background-position: -50% 0; }
 }
 
-/* Text shimmer wave — per-character color pulse */
+/* Text shimmer wave — per-character color pulse with a subtle bob */
 @keyframes text-shimmer-wave {
-  0%, 100% { color: var(--wave-base); }
-  50% { color: var(--wave-peak); }
+  0%, 100% {
+    color: var(--wave-base);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  40% {
+    color: var(--wave-peak);
+    transform: translateY(-3px) scale(1.08);
+    filter: blur(0.3px);
+  }
+  60% {
+    color: var(--wave-peak);
+    transform: translateY(-3px) scale(1.08);
+    filter: blur(0.3px);
+  }
 }
 
 /* Infinite marquee slider */

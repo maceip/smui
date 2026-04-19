@@ -61,7 +61,7 @@ function TextShimmerWave({
       {chars.map((ch, i) => (
         <span
           key={`${ch}-${i}`}
-          className="animate-[text-shimmer-wave_var(--wave-duration)_ease-in-out_infinite]"
+          className="inline-block animate-[text-shimmer-wave_var(--wave-duration)_ease-in-out_infinite] will-change-transform"
           style={{
             color: "var(--wave-base)",
             animationDelay: `${i * charDelay}s`,

@@ -93,11 +93,18 @@ function Carousel({
       // Update the active pip immediately so the UI is responsive even
       // before the smooth scroll actually lands.
       setActiveIndex(clamped)
-      target.scrollIntoView({
-        behavior: "smooth",
-        inline: snap === "center" ? "center" : snap === "end" ? "end" : "start",
-        block: "nearest",
-      })
+      // scrollTo on the container directly — scrollIntoView bubbles up and
+      // can drag the whole page vertically when the carousel is offscreen.
+      const elRect = el.getBoundingClientRect()
+      const targetRect = target.getBoundingClientRect()
+      const delta = targetRect.left - elRect.left
+      let left = el.scrollLeft + delta
+      if (snap === "center") {
+        left -= (el.clientWidth - target.offsetWidth) / 2
+      } else if (snap === "end") {
+        left -= el.clientWidth - target.offsetWidth
+      }
+      el.scrollTo({ left, behavior: "smooth" })
     },
     [snap],
   )
