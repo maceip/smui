@@ -57,6 +57,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { openCommandPalette } from "@/components/command-palette";
 import { useState, useCallback } from "react";
 
 function Nav() {
@@ -92,12 +93,16 @@ function Nav() {
         </Link>
       </div>
       <div className="flex items-center gap-2.5">
-        <div className="text-xs text-muted-foreground px-2.5 py-1 bg-background border border-border flex items-center justify-between min-w-[180px]">
+        <button
+          type="button"
+          onClick={openCommandPalette}
+          className="text-xs text-muted-foreground px-2.5 py-1 bg-background border border-border flex items-center justify-between min-w-[180px] hover:text-foreground hover:border-[hsl(var(--smui-border-hover))] transition-colors cursor-pointer"
+        >
           <span>search...</span>
           <kbd className="text-label text-muted-foreground border border-border px-1 bg-card">
             ctrl+k
           </kbd>
-        </div>
+        </button>
         <ThemeSwitcher />
         <span className="text-xs text-muted-foreground">v1.0.0</span>
       </div>

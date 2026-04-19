@@ -70,6 +70,7 @@ import {
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { ThemePresetSwitcher } from "@/components/theme-preset-switcher";
+import { NavSearchButton } from "@/components/nav-search-button";
 import { LiveStatsRow, LiveSystemReadouts, LiveClock } from "@/components/live-readouts";
 import { LiveLog } from "@/components/live-log";
 import {
@@ -741,6 +742,7 @@ function Nav() {
         </a>
       </div>
       <div className="flex items-center gap-3">
+        <NavSearchButton />
         <LiveClock />
         <ThemeSwitcher />
         <a

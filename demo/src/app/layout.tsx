@@ -3,6 +3,7 @@ import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DialProvider } from "@/components/dial-provider";
+import { CommandPalette } from "@/components/command-palette";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -48,6 +49,7 @@ export default function RootLayout({
       <body className={`${jetbrainsMono.className} ${spaceGrotesk.variable} antialiased`}>
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
+          <CommandPalette />
           <DialProvider />
         </ThemeProvider>
       </body>
