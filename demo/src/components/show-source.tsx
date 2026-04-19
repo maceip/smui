@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Copy, Check } from "lucide-react";
+import { X, Copy, Check, Code2 } from "lucide-react";
 
 // NOTE: The `html` prop is generated server-side by shiki at build time from
 // hardcoded code strings in page.tsx. It never contains user-supplied content,
@@ -61,12 +61,20 @@ export function ShowSource({
 
   return (
     <>
-      <div
-        onClick={() => setOpen(true)}
-        className="cursor-pointer h-full [&>*:first-child]:h-full"
-        title="Click to view source"
-      >
+      {/* Component preview — NOT clickable. Interaction stays on the component. */}
+      <div className="relative group/source h-full [&>*:first-child]:h-full">
         {children}
+        {/* Floating "source" affordance in the top-right corner */}
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="View source"
+          title="View source"
+          className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1 text-label tracking-wider uppercase px-1.5 py-[3px] bg-card/90 border border-border text-muted-foreground hover:text-foreground hover:border-[hsl(var(--smui-border-hover))] transition-colors opacity-0 group-hover/source:opacity-100 focus-visible:opacity-100 cursor-pointer backdrop-blur-sm"
+        >
+          <Code2 className="w-3 h-3" />
+          source
+        </button>
       </div>
 
       {open && (

@@ -8,88 +8,91 @@ interface TextScrambleProps extends React.ComponentProps<"span"> {
   children: string
   /** Characters used for the scramble */
   characters?: string
-  /** Frames per second of the scramble animation (default 24) */
+  /** Frames per second of the scramble animation (default 30) */
   speed?: number
-  /** Target duration in seconds from start -> fully revealed (default 1.2) */
+  /** Total scramble duration in seconds (default 1.2) */
   duration?: number
-  /** Start automatically on mount (default true) */
+  /** Start automatically on mount and whenever `children` changes (default true) */
   autoPlay?: boolean
-  /** Trigger a re-scramble when this value changes */
-  trigger?: unknown
 }
 
 const DEFAULT_CHARS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_\\/[]{}—=+*^?#"
 
 /**
- * Scrambles random glyphs into a target string, revealing left-to-right
- * over `duration`. Honors reduced-motion.
+ * Scrambles random glyphs into a target string, revealing left-to-right.
+ * Re-triggers automatically whenever `children` changes. Honors
+ * prefers-reduced-motion.
  */
 function TextScramble({
   children,
   characters = DEFAULT_CHARS,
-  speed = 24,
+  speed = 30,
   duration = 1.2,
   autoPlay = true,
-  trigger,
   className,
   ...props
 }: TextScrambleProps) {
   const [display, setDisplay] = React.useState(children)
-  const frameRef = React.useRef(0)
-  const rafRef = React.useRef<number | null>(null)
 
-  const play = React.useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
+  // Keep the latest tuning in refs so the animation loop doesn't restart
+  // just because a parent re-renders.
+  const charsRef = React.useRef(characters)
+  const speedRef = React.useRef(speed)
+  const durationRef = React.useRef(duration)
+  charsRef.current = characters
+  speedRef.current = speed
+  durationRef.current = duration
+
+  React.useEffect(() => {
+    if (!autoPlay) {
+      setDisplay(children)
+      return
+    }
+
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setDisplay(children)
+      return
+    }
+
     const target = children
-    const totalFrames = Math.max(1, Math.round(duration * speed))
-    let f = 0
-    const frameInterval = 1000 / speed
-    let lastTime = performance.now()
+    const localChars = charsRef.current
+    const frameInterval = 1000 / speedRef.current
+    const totalFrames = Math.max(
+      1,
+      Math.round(durationRef.current * speedRef.current),
+    )
 
-    function step(now: number) {
-      if (now - lastTime < frameInterval) {
-        rafRef.current = requestAnimationFrame(step)
-        return
-      }
-      lastTime = now
-      const progress = f / totalFrames
+    let frame = 0
+    let timer: ReturnType<typeof setInterval> | null = null
+
+    timer = setInterval(() => {
+      frame++
+      const progress = frame / totalFrames
       const revealCount = Math.floor(progress * target.length)
       let out = ""
       for (let i = 0; i < target.length; i++) {
-        if (i < revealCount || target[i] === " ") {
-          out += target[i]
+        const ch = target[i]
+        if (i < revealCount || ch === " ") {
+          out += ch
         } else {
-          out += characters[Math.floor(Math.random() * characters.length)]
+          out += localChars[Math.floor(Math.random() * localChars.length)]
         }
       }
       setDisplay(out)
-      f++
-      if (f <= totalFrames) {
-        rafRef.current = requestAnimationFrame(step)
-      } else {
+      if (frame >= totalFrames) {
         setDisplay(target)
+        if (timer) clearInterval(timer)
       }
-    }
+    }, frameInterval)
 
-    rafRef.current = requestAnimationFrame(step)
-    frameRef.current = f
-  }, [children, characters, speed, duration])
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)")
-      if (mq?.matches) {
-        setDisplay(children)
-        return
-      }
-    }
-    if (autoPlay) play()
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      if (timer) clearInterval(timer)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger, autoPlay])
+  }, [children, autoPlay])
 
   return (
     <span

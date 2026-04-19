@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AccentPicker } from "@/components/accent-picker";
+import { ThemePresetSwitcher } from "@/components/theme-preset-switcher";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -485,7 +486,11 @@ export default function DashboardPage() {
   return (
     <main>
       <Nav />
-      <AccentPicker />
+      <div className="sticky top-12 z-40 flex items-center justify-center gap-4 py-2 px-5 bg-card border-b border-border">
+        <ThemePresetSwitcher />
+        <span className="text-border">|</span>
+        <AccentPicker variant="inline" />
+      </div>
       <div className="accent-line" />
 
       <section className="py-14 px-6 max-w-[1200px] mx-auto">

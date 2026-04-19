@@ -256,6 +256,12 @@
   100% { background-position: -50% 0; }
 }
 
+/* Text shimmer wave — per-character color pulse */
+@keyframes text-shimmer-wave {
+  0%, 100% { color: var(--wave-base); }
+  50% { color: var(--wave-peak); }
+}
+
 /* Infinite marquee slider */
 @keyframes infinite-slider {
   from { transform: translateX(0); }

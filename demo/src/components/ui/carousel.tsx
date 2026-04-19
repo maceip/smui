@@ -9,7 +9,7 @@ interface CarouselProps extends React.ComponentProps<"div"> {
   gap?: string
   /** Show prev/next buttons (default true) */
   showControls?: boolean
-  /** Show position indicator dots (default true) */
+  /** Show position indicator dashes (default true) */
   showIndicators?: boolean
   /** Snap alignment (default "start") */
   snap?: "start" | "center" | "end"
@@ -19,7 +19,9 @@ interface CarouselProps extends React.ComponentProps<"div"> {
 
 /**
  * Scroll-snap carousel with prev/next controls and current-item indicators.
- * Uses native scroll snap — no transform hacks, honors momentum scrolling.
+ * Programmatic navigation uses `scrollIntoView` (which plays well with
+ * scroll-snap in every browser); the active indicator is derived by
+ * measuring which item's center is closest to the viewport center on scroll.
  */
 function Carousel({
   children,
@@ -36,49 +38,69 @@ function Carousel({
   const [activeIndex, setActiveIndex] = React.useState(0)
   const [itemCount, setItemCount] = React.useState(0)
 
+  const measureActive = React.useCallback(() => {
+    const el = scrollerRef.current
+    if (!el) return
+    const items = Array.from(el.children) as HTMLElement[]
+    if (items.length === 0) return
+    const viewportCenter = el.scrollLeft + el.clientWidth / 2
+    let nearest = 0
+    let bestDist = Infinity
+    for (let i = 0; i < items.length; i++) {
+      const itemCenter = items[i].offsetLeft + items[i].offsetWidth / 2
+      const dist = Math.abs(itemCenter - viewportCenter)
+      if (dist < bestDist) {
+        bestDist = dist
+        nearest = i
+      }
+    }
+    setActiveIndex(nearest)
+  }, [])
+
   React.useEffect(() => {
     const el = scrollerRef.current
     if (!el) return
     setItemCount(el.children.length)
+    measureActive()
 
     let raf = 0
     const onScroll = () => {
       cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => {
-        const items = Array.from(el.children) as HTMLElement[]
-        const scrollCenter = el.scrollLeft + el.clientWidth / 2
-        let nearest = 0
-        let bestDist = Infinity
-        for (let i = 0; i < items.length; i++) {
-          const itemCenter = items[i].offsetLeft + items[i].offsetWidth / 2
-          const dist = Math.abs(itemCenter - scrollCenter)
-          if (dist < bestDist) {
-            bestDist = dist
-            nearest = i
-          }
-        }
-        setActiveIndex(nearest)
-      })
+      raf = requestAnimationFrame(measureActive)
     }
-
-    onScroll()
     el.addEventListener("scroll", onScroll, { passive: true })
+
+    // Track container resizes so the indicator stays accurate.
+    const ro = new ResizeObserver(() => measureActive())
+    ro.observe(el)
+
     return () => {
       el.removeEventListener("scroll", onScroll)
+      ro.disconnect()
       cancelAnimationFrame(raf)
     }
-  }, [children])
+  }, [children, measureActive])
 
-  const scrollToIndex = (i: number) => {
-    const el = scrollerRef.current
-    if (!el) return
-    const items = Array.from(el.children) as HTMLElement[]
-    const clamped = Math.max(0, Math.min(items.length - 1, i))
-    const target = items[clamped]
-    if (target) {
-      el.scrollTo({ left: target.offsetLeft, behavior: "smooth" })
-    }
-  }
+  const scrollToIndex = React.useCallback(
+    (i: number) => {
+      const el = scrollerRef.current
+      if (!el) return
+      const items = Array.from(el.children) as HTMLElement[]
+      if (items.length === 0) return
+      const clamped = Math.max(0, Math.min(items.length - 1, i))
+      const target = items[clamped]
+      if (!target) return
+      // Update the active pip immediately so the UI is responsive even
+      // before the smooth scroll actually lands.
+      setActiveIndex(clamped)
+      target.scrollIntoView({
+        behavior: "smooth",
+        inline: snap === "center" ? "center" : snap === "end" ? "end" : "start",
+        block: "nearest",
+      })
+    },
+    [snap],
+  )
 
   return (
     <div
@@ -94,8 +116,9 @@ function Carousel({
         ref={scrollerRef}
         className={cn(
           "flex overflow-x-auto overflow-y-hidden scroll-smooth",
-          "snap-x snap-mandatory",
-          "scrollbar-none [&::-webkit-scrollbar]:hidden"
+          // snap-proximity feels smoother than snap-mandatory for click-to-scroll.
+          "snap-x snap-proximity",
+          "[&::-webkit-scrollbar]:hidden",
         )}
         style={{ gap, scrollbarWidth: "none" }}
       >
@@ -106,7 +129,7 @@ function Carousel({
               "shrink-0",
               snap === "center" && "snap-center",
               snap === "start" && "snap-start",
-              snap === "end" && "snap-end"
+              snap === "end" && "snap-end",
             )}
           >
             {child}
@@ -150,7 +173,7 @@ function Carousel({
                 "h-1 w-5 transition-colors cursor-pointer",
                 i === activeIndex
                   ? "bg-primary"
-                  : "bg-border hover:bg-muted-foreground"
+                  : "bg-border hover:bg-muted-foreground",
               )}
             />
           ))}

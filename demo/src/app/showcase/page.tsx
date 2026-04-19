@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { AccentPicker } from "@/components/accent-picker"
 import { ThemeSwitcher } from "@/components/theme-switcher"
+import { ThemePresetSwitcher } from "@/components/theme-preset-switcher"
 import {
   Card,
   CardHeader,
@@ -12,6 +13,7 @@ import {
   CardContent,
 } from "@/components/ui/card"
 import { TextShimmer } from "@/components/ui/text-shimmer"
+import { TextShimmerWave } from "@/components/ui/text-shimmer-wave"
 import { TextScramble } from "@/components/ui/text-scramble"
 import { AnimatedNumber } from "@/components/ui/animated-number"
 import { SlidingNumber } from "@/components/ui/sliding-number"
@@ -270,7 +272,11 @@ export default function ShowcasePage() {
   return (
     <main>
       <Nav />
-      <AccentPicker />
+      <div className="sticky top-12 z-40 flex items-center justify-center gap-4 py-2 px-5 bg-card border-b border-border">
+        <ThemePresetSwitcher />
+        <span className="text-border">|</span>
+        <AccentPicker variant="inline" />
+      </div>
       <div className="accent-line" />
 
       <section className="py-10 px-6 max-w-[1000px] mx-auto">
@@ -288,11 +294,22 @@ export default function ShowcasePage() {
           id="text-shimmer"
           name="text shimmer"
           source="motion-primitives"
-          description="Sweeping gradient across static text — useful for 'thinking' or skeleton states."
+          description="Sweeping gradient across static text — useful for 'thinking' or skeleton states. Highlight color follows the active accent, so dramatic accents read better."
         >
           <TextShimmer className="text-heading font-medium">
             Calibrating subsystems…
           </TextShimmer>
+        </ShowcaseRow>
+
+        <ShowcaseRow
+          id="text-shimmer-wave"
+          name="text shimmer wave"
+          source="motion-primitives"
+          description="Per-character shimmer that ripples across the string from left to right."
+        >
+          <TextShimmerWave className="text-heading font-medium">
+            Synchronizing telemetry relay
+          </TextShimmerWave>
         </ShowcaseRow>
 
         <ShowcaseRow
@@ -302,9 +319,7 @@ export default function ShowcasePage() {
           description="Resolves random glyphs into target text. Re-triggers every few seconds below."
         >
           <div className="text-heading font-medium text-foreground">
-            <TextScramble trigger={scrambleText} duration={0.9}>
-              {scrambleText}
-            </TextScramble>
+            <TextScramble duration={0.9}>{scrambleText}</TextScramble>
           </div>
         </ShowcaseRow>
 

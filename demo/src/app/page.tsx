@@ -445,69 +445,6 @@ const CODE_CARGO_TABLE = `const typeColors = {
   </TableBody>
 </Table>`;
 
-const CODE_DASHBOARD = `{/* Stat card */}
-<Card className="card-glow p-2.5 px-3">
-  <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block">
-    total credits
-  </span>
-  <div className="text-stat font-medium text-foreground tracking-tight">
-    1,247,830
-  </div>
-  <div className="text-xs text-[hsl(var(--smui-green))] mt-0.5">
-    +23,450 this cycle
-  </div>
-</Card>
-
-{/* Bar chart */}
-<div className="flex items-end gap-1 h-[100px]">
-  {[45, 62, 38, 80, 55, 70, 48, 90, 65, 78, 52, 95].map((h, i) => (
-    <div key={i} className="flex-1 flex flex-col items-center gap-[3px] h-full justify-end">
-      <div
-        className={\`w-full \${highlight.includes(i) ? "bg-[hsl(var(--smui-frost-4))]" : "bg-primary"} opacity-70\`}
-        style={{ height: \`\${h}%\` }}
-      />
-      <span className="text-xs text-muted-foreground">
-        {String(i + 1).padStart(2, "0")}
-      </span>
-    </div>
-  ))}
-</div>
-
-{/* Sidebar nav item */}
-<div className={\`flex items-center gap-2 text-ui py-[5px] px-2.5 cursor-pointer \${
-  active ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-}\`}>
-  <span className="text-xs w-3.5 text-center">~</span>
-  overview
-</div>
-
-{/* Dialog */}
-<div className="bg-card border border-border w-full max-w-[300px]">
-  <div className="p-2.5 px-3 border-b border-border">
-    <div className="text-sm font-medium text-foreground uppercase tracking-wider">
-      confirm jump
-    </div>
-    <div className="text-xs text-muted-foreground mt-0.5">
-      dest: nexus prime // est. 47 ticks
-    </div>
-  </div>
-  <div className="p-3">
-    <Input type="password" defaultValue="xxxxxxxxxxxx" />
-    <Alert className="border-[hsl(var(--smui-yellow)/0.25)] bg-[hsl(var(--smui-yellow)/0.04)]">
-      <AlertTriangle className="h-3.5 w-3.5" />
-      <AlertDescription>Unpoliced territory. Proceed with caution.</AlertDescription>
-    </Alert>
-  </div>
-  <div className="p-2 px-3 border-t border-border flex gap-1 justify-end">
-    <Button variant="ghost" size="sm">abort</Button>
-    <Button size="sm">initiate jump</Button>
-  </div>
-</div>`;
-
-// ============================================================
-// "WHAT YOU GET" CODE EXAMPLES
-// ============================================================
-
 const CODE_PALETTE = `:root {
   /* Frost blues (Nord-inspired) */
   --smui-frost-1: 176 25% 65%;   /* #8fbcbb - teal */
@@ -779,7 +716,7 @@ function Nav() {
           components
         </a>
         <a
-          href="#dashboard"
+          href="/dashboard"
           className="text-xs text-muted-foreground uppercase tracking-wider px-2.5 py-1.5 hover:text-foreground transition-colors"
         >
           dashboard
@@ -1369,7 +1306,6 @@ export default async function Home() {
     hlAccordion,
     hlCommandPalette,
     hlCargoTable,
-    hlDashboard,
     hlPalette,
     hlSurfaces,
     hlRadius,
@@ -1390,7 +1326,6 @@ export default async function Home() {
     highlight(CODE_ACCORDION),
     highlight(CODE_COMMAND_PALETTE),
     highlight(CODE_CARGO_TABLE),
-    highlight(CODE_DASHBOARD),
     highlight(CODE_PALETTE, "css"),
     highlight(CODE_SURFACES, "css"),
     highlight(CODE_RADIUS, "css"),
@@ -1485,7 +1420,7 @@ export default async function Home() {
 
       <hr className="border-none h-px bg-border m-0" />
 
-      {/* Dashboard Example */}
+      {/* Dashboard link-out — the full interactive example lives at /dashboard */}
       <section id="dashboard" className="py-14 px-6 max-w-[1200px] mx-auto scroll-mt-14">
         <div className="text-xs text-muted-foreground tracking-[2px] uppercase mb-1.5">
           example // layout
@@ -1493,180 +1428,18 @@ export default async function Home() {
         <h2 className="text-heading font-medium text-foreground tracking-tight mb-1">
           bridge dashboard
         </h2>
-        <p className="text-sm text-muted-foreground mb-7">
-          A full layout example combining sidebar navigation, stat cards, charts,
-          tables, and dialogs. Click anywhere on it to view the source.
+        <p className="text-sm text-muted-foreground mb-5">
+          A full interactive layout example — sidebar navigation, stat cards,
+          charts, tables, dialogs, resizable panes, and terminal — all driven by
+          SMUI tokens.
         </p>
-
-        <ShowSource code={CODE_DASHBOARD} html={hlDashboard}>
-          <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-2">
-            {/* Sidebar */}
-            <div className="flex flex-col gap-2">
-              <Card className="card-glow">
-                <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3.5">
-                  <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
-                    iss erebus
-                  </CardTitle>
-                  <CardDescription className="text-xs flex items-center gap-1">
-                    <span className="inline-block w-[5px] h-[5px] rounded-full bg-[hsl(var(--smui-green))]" />
-                  </CardDescription>
-                </CardHeader>
-                <div className="p-1">
-                  <nav className="flex flex-col">
-                    {[
-                      { icon: "~", label: "overview", active: true },
-                      { icon: "*", label: "navigation", active: false },
-                      { icon: "x", label: "weapons", active: false },
-                      { icon: "=", label: "engineering", active: false },
-                      { icon: "#", label: "cargo hold", active: false },
-                      { icon: ">", label: "comms", active: false },
-                      { icon: "@", label: "crew", active: false },
-                      { icon: "%", label: "settings", active: false },
-                    ].map((item) => (
-                      <div
-                        key={item.label}
-                        className={`flex items-center gap-2 text-ui py-[5px] px-2.5 cursor-pointer transition-all ${
-                          item.active
-                            ? "text-primary bg-primary/10"
-                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                        }`}
-                      >
-                        <span
-                          className={`text-xs w-3.5 text-center ${item.active ? "opacity-100" : "opacity-50"}`}
-                        >
-                          {item.icon}
-                        </span>
-                        {item.label}
-                      </div>
-                    ))}
-                  </nav>
-                </div>
-              </Card>
-              <Card className="card-glow">
-                <CardHeader className="py-2.5 px-3.5">
-                  <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
-                    location
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="">
-                  <div className="mb-2">
-                    <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
-                      system
-                    </span>
-                    <div className="text-sm px-2 py-1.5 bg-background border border-border text-primary">
-                      GAMMA DRACONIS
-                    </div>
-                  </div>
-                  <div className="mb-2">
-                    <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
-                      sector
-                    </span>
-                    <div className="text-sm px-2 py-1.5 bg-background border border-border">
-                      7-ALPHA
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
-                      coords
-                    </span>
-                    <div className="text-xs px-2 py-1.5 bg-background border border-border">
-                      X:4281 Y:-1892 Z:0042
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Main content */}
-            <div className="flex flex-col gap-2 min-h-0">
-              {/* Live stats row */}
-              <LiveStatsRow />
-
-              {/* Bar chart */}
-              <Card className="card-glow">
-                <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3.5">
-                  <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
-                    resource yield // 12 cycles
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    trend: positive
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="">
-                  <div className="flex items-end gap-1 h-[160px]">
-                    {[45, 62, 38, 80, 55, 70, 48, 90, 65, 78, 52, 95].map(
-                      (h, i) => (
-                        <div
-                          key={i}
-                          className="flex-1 flex flex-col items-center gap-[3px] h-full justify-end"
-                        >
-                          <div
-                            className={`w-full ${[3, 6, 10].includes(i) ? "bg-[hsl(var(--smui-frost-4))]" : "bg-primary"} opacity-70`}
-                            style={{ height: `${h}%` }}
-                          />
-                          <span className="text-xs text-muted-foreground">
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Live system log */}
-              <LiveLog maxLines={10} />
-
-              {/* Cargo table */}
-              <ShowSource code={CODE_CARGO_TABLE} html={hlCargoTable}>
-                <CargoTable />
-              </ShowSource>
-
-              {/* Dialog */}
-              <Card className="card-glow">
-                <CardHeader className="py-2.5 px-3.5">
-                  <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
-                    component // dialog
-                  </CardTitle>
-                </CardHeader>
-                <div className="bg-black/35 p-4 flex items-center justify-center">
-                  <div className="bg-card border border-border w-full max-w-[280px]">
-                    <div className="p-2.5 px-3 border-b border-border">
-                      <div className="text-sm font-medium text-foreground uppercase tracking-wider">
-                        confirm jump
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        dest: nexus prime // est. 47 ticks
-                      </div>
-                    </div>
-                    <div className="p-3">
-                      <div className="mb-2">
-                        <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block mb-1">
-                          auth code
-                        </span>
-                        <Input type="password" defaultValue="xxxxxxxxxxxx" />
-                      </div>
-                      <Alert className="border-[hsl(var(--smui-yellow)/0.25)] bg-[hsl(var(--smui-yellow)/0.04)] [&>svg]:text-[hsl(var(--smui-yellow))]">
-                        <AlertTriangle className="h-3.5 w-3.5" />
-                        <div>
-                          <AlertDescription>
-                            Unpoliced territory. Proceed with caution.
-                          </AlertDescription>
-                        </div>
-                      </Alert>
-                    </div>
-                    <div className="p-2 px-3 border-t border-border flex gap-1 justify-end">
-                      <Button variant="ghost" size="sm">
-                        abort
-                      </Button>
-                      <Button size="sm">initiate jump</Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </ShowSource>
+        <a
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-ui tracking-wider uppercase px-3 py-2 bg-card border border-border text-primary hover:border-[hsl(var(--smui-border-hover))] transition-colors"
+        >
+          open full dashboard
+          <span aria-hidden>→</span>
+        </a>
       </section>
 
       <hr className="border-none h-px bg-border m-0" />

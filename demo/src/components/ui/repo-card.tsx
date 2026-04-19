@@ -78,13 +78,13 @@ function RepoCard({
       {...tagProps}
       {...props}
     >
-      <div className="flex items-center gap-1.5 text-ui mb-1">
+      <div className="flex items-center gap-1.5 text-ui mb-1.5">
         <span className="text-muted-foreground">{owner}</span>
         <span className="text-muted-foreground">/</span>
-        <span className="text-primary font-medium">{name}</span>
+        <span className="text-primary font-semibold">{name}</span>
       </div>
       {description && (
-        <p className="text-ui text-muted-foreground leading-snug mb-2.5 line-clamp-2">
+        <p className="text-xs text-muted-foreground leading-snug mb-2.5 line-clamp-2 pl-0.5">
           {description}
         </p>
       )}
