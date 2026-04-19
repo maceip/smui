@@ -115,17 +115,20 @@ function Gauge({
       : `hsl(var(--smui-${color}))`
     : "hsl(var(--primary))"
 
-  // Animation
+  // Animation — current progress lives in a ref so rapid `pct` changes
+  // always interpolate from the *actual* on-screen value, not a stale closure.
   const [animatedPct, setAnimatedPct] = React.useState(animated ? 0 : pct)
+  const animatedPctRef = React.useRef(animatedPct)
   const animFrameRef = React.useRef<number>(0)
 
   React.useEffect(() => {
     if (!animated) {
+      animatedPctRef.current = pct
       setAnimatedPct(pct)
       return
     }
     const startTime = performance.now()
-    const startPct = animatedPct
+    const startPct = animatedPctRef.current
     const duration = 600
 
     function tick(now: number) {
@@ -133,13 +136,14 @@ function Gauge({
       const t = Math.min(elapsed / duration, 1)
       // Ease out cubic
       const eased = 1 - Math.pow(1 - t, 3)
-      setAnimatedPct(startPct + (pct - startPct) * eased)
+      const next = startPct + (pct - startPct) * eased
+      animatedPctRef.current = next
+      setAnimatedPct(next)
       if (t < 1) animFrameRef.current = requestAnimationFrame(tick)
     }
 
     animFrameRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(animFrameRef.current)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pct, animated])
 
   const currentFillEnd = startAngle + sweep * animatedPct

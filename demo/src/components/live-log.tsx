@@ -13,6 +13,7 @@ import {
 type Severity = "info" | "warn" | "error" | "ok" | "sys";
 
 interface LogEntry {
+  id: number;
   time: string;
   severity: Severity;
   tag: string;
@@ -79,13 +80,14 @@ export function LiveLog({ maxLines = 12 }: { maxLines?: number }) {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const indexRef = useRef(Math.floor(Math.random() * MESSAGES.length));
+  const idRef = useRef(0);
 
   // Seed initial entries
   useEffect(() => {
     const initial: LogEntry[] = [];
     for (let i = 0; i < 6; i++) {
       const msg = MESSAGES[(indexRef.current + i) % MESSAGES.length];
-      initial.push({ time: getTimestamp(), ...msg });
+      initial.push({ id: idRef.current++, time: getTimestamp(), ...msg });
     }
     indexRef.current += 6;
     setEntries(initial);
@@ -97,7 +99,7 @@ export function LiveLog({ maxLines = 12 }: { maxLines?: number }) {
       const msg = MESSAGES[indexRef.current % MESSAGES.length];
       indexRef.current++;
       setEntries((prev) => {
-        const next = [...prev, { time: getTimestamp(), ...msg }];
+        const next = [...prev, { id: idRef.current++, time: getTimestamp(), ...msg }];
         return next.slice(-maxLines);
       });
     }, 1500 + Math.random() * 2000);
@@ -127,9 +129,9 @@ export function LiveLog({ maxLines = 12 }: { maxLines?: number }) {
         className="px-3.5 pb-3 overflow-y-auto font-mono"
         style={{ maxHeight: `${maxLines * 20 + 8}px` }}
       >
-        {entries.map((entry, i) => (
+        {entries.map((entry) => (
           <div
-            key={`${entry.time}-${i}`}
+            key={entry.id}
             className="flex gap-2 text-xs leading-5 whitespace-nowrap"
           >
             <span className="text-muted-foreground tabular-nums shrink-0">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function CopyBlock({
   text,
@@ -10,6 +10,13 @@ export function CopyBlock({
   prefix?: string;
 }) {
   const [copied, setCopied] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
     <div className="flex max-w-full sm:max-w-fit mx-auto border border-border bg-card">
@@ -34,7 +41,8 @@ export function CopyBlock({
             document.body.removeChild(ta);
           }
           setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
+          timeoutRef.current = setTimeout(() => setCopied(false), 2000);
         }}
         className="text-xs text-muted-foreground bg-secondary border-l border-border px-3 py-[7px] leading-none uppercase tracking-wider hover:text-foreground transition-colors shrink-0 cursor-pointer"
       >

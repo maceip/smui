@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -27,12 +27,6 @@ function AnimatedStat({
   delta?: number;
   deltaLabel?: string;
 }) {
-  const [display, setDisplay] = useState(value);
-
-  useEffect(() => {
-    setDisplay(value);
-  }, [value]);
-
   return (
     <Card className="card-glow p-2.5 px-3">
       <span className="text-label text-muted-foreground tracking-[1.5px] uppercase block">
@@ -40,7 +34,7 @@ function AnimatedStat({
       </span>
       <div className="text-stat font-medium text-foreground tracking-tight">
         {prefix}
-        {display.toLocaleString()}
+        {value.toLocaleString()}
         {suffix}
       </div>
       {delta !== undefined && (
