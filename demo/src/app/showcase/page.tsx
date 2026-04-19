@@ -4,7 +4,13 @@ import * as React from "react"
 import Link from "next/link"
 import { AccentPicker } from "@/components/accent-picker"
 import { ThemeSwitcher } from "@/components/theme-switcher"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card"
 import { TextShimmer } from "@/components/ui/text-shimmer"
 import { TextScramble } from "@/components/ui/text-scramble"
 import { AnimatedNumber } from "@/components/ui/animated-number"
@@ -68,37 +74,38 @@ function Nav() {
 
 function ShowcaseRow({
   id,
-  title,
+  name,
   source,
   description,
   children,
 }: {
   id: string
-  title: string
+  name: string
   source?: string
   description?: string
   children: React.ReactNode
 }) {
   return (
-    <section
-      id={id}
-      className="scroll-mt-14 border-t border-border py-6 first:border-t-0 first:pt-0"
-    >
-      <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 className="text-ui font-medium text-foreground uppercase tracking-[1.5px]">
-          {title}
-        </h3>
-        {source && (
-          <span className="text-label text-muted-foreground tracking-wider uppercase">
-            src // {source}
-          </span>
-        )}
-      </div>
-      {description && (
-        <p className="text-ui text-muted-foreground mb-3">{description}</p>
-      )}
+    <section id={id} className="scroll-mt-14 mb-2">
       <Card className="card-glow">
-        <CardContent className="p-4">{children}</CardContent>
+        <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            component // {name}
+          </CardTitle>
+          {source && (
+            <CardDescription className="text-label text-muted-foreground tracking-wider uppercase">
+              src // {source}
+            </CardDescription>
+          )}
+        </CardHeader>
+        {description && (
+          <div className="text-xs text-muted-foreground px-3.5 -mt-1 mb-2">
+            {description}
+          </div>
+        )}
+        <CardContent className="p-3.5 pt-2 bg-black/35 border-t border-border">
+          {children}
+        </CardContent>
       </Card>
     </section>
   )
@@ -279,7 +286,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="text-shimmer"
-          title="Text shimmer"
+          name="text shimmer"
           source="motion-primitives"
           description="Sweeping gradient across static text — useful for 'thinking' or skeleton states."
         >
@@ -290,7 +297,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="text-scramble"
-          title="Text scramble"
+          name="text scramble"
           source="motion-primitives"
           description="Resolves random glyphs into target text. Re-triggers every few seconds below."
         >
@@ -303,7 +310,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="animated-number"
-          title="Animated number"
+          name="animated number"
           source="motion-primitives"
           description="Smoothly tweens between values with an ease-out curve."
         >
@@ -316,7 +323,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="sliding-number"
-          title="Sliding number"
+          name="sliding number"
           source="motion-primitives"
           description="Odometer-style per-digit slide when the value changes."
         >
@@ -330,7 +337,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="infinite-slider"
-          title="Infinite slider"
+          name="infinite slider"
           source="motion-primitives"
           description="Seamless marquee with mask-edge fades. Pauses on hover."
         >
@@ -357,7 +364,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="carousel"
-          title="Carousel"
+          name="carousel"
           source="motion-primitives"
           description="Scroll-snap carousel with prev/next controls and position indicators."
         >
@@ -385,7 +392,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="code-line"
-          title="Code line"
+          name="code line"
           source="jal-co/ui"
           description="Single highlighted line of code with inline copy."
         >
@@ -401,7 +408,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="repo-card"
-          title="Repo card"
+          name="repo card"
           source="jal-co/ui"
           description="Owner/name, description, language, stars, forks, updated."
         >
@@ -420,7 +427,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="commit-graph"
-          title="Commit graph"
+          name="commit graph"
           source="jal-co/ui"
           description="Weekly commit-count heatmap with hover details."
         >
@@ -431,7 +438,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="file-tree"
-          title="File tree"
+          name="file tree"
           source="jal-co/ui"
           description="Keyboard-accessible collapsible tree."
         >
@@ -445,7 +452,7 @@ export default function ShowcasePage() {
 
         <ShowcaseRow
           id="chat"
-          title="Chat + ChatInput"
+          name="chat + chatinput"
           source="prompt-kit inspired"
           description="Role-tagged messages with copy affordance, streaming cursor, model picker, and auto-grow input."
         >

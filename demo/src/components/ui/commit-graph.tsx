@@ -169,7 +169,6 @@ function CommitGraph({
                       ? `${day.date}: ${day.count} commit${day.count === 1 ? "" : "s"}`
                       : ""
                   }
-                  className="border border-border/60"
                   style={{
                     width: cellSize,
                     height: cellSize,

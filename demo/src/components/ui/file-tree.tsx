@@ -67,8 +67,8 @@ function TreeNode({
         onClick={onClick}
         className={cn(
           "group/row w-full flex items-center gap-1.5 py-[3px] px-1 text-ui text-left",
-          "hover:bg-accent/50 transition-colors cursor-pointer",
-          !isFolder && "text-muted-foreground hover:text-foreground"
+          "text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer",
+          isFolder && "text-foreground"
         )}
         style={{ paddingLeft: level * indent + 4 }}
         aria-expanded={isFolder ? isOpen : undefined}

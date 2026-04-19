@@ -162,7 +162,7 @@ function ChatMessage({
           {content}
           {streaming && (
             <span className="cursor-blink ml-0.5 text-[hsl(var(--smui-frost-2))]">
-              ▌
+              _
             </span>
           )}
         </div>
@@ -322,7 +322,7 @@ function ChatInput({
               {menuOpen && (
                 <ul
                   role="listbox"
-                  className="absolute bottom-full left-0 mb-1 bg-card border border-border min-w-[200px] z-10 py-1 shadow-lg"
+                  className="absolute bottom-full left-0 mb-1 bg-card border border-border min-w-[200px] z-10 py-1"
                 >
                   {models.map((m) => (
                     <li

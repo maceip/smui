@@ -71,8 +71,8 @@ function RepoCard({
     <Tag
       data-slot="repo-card"
       className={cn(
-        "block bg-card border border-border p-3.5 transition-colors",
-        href && "hover:border-[hsl(var(--smui-border-hover))]",
+        "block bg-card border border-border p-3.5",
+        href && "card-glow",
         className
       )}
       {...tagProps}
