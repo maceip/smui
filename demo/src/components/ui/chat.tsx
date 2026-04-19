@@ -282,25 +282,27 @@ function ChatInput({
         submit()
       }}
       className={cn(
-        "flex flex-col gap-2 border-t border-border bg-card px-3 py-2.5",
-        className
+        "border-t border-border bg-card px-3 py-2.5",
+        className,
       )}
       {...props}
     >
-      <textarea
-        ref={textareaRef}
-        value={value}
-        onChange={(e) => onValueChange(e.target.value)}
-        onKeyDown={onKeyDown}
-        placeholder={placeholder}
-        rows={1}
-        className={cn(
-          "w-full resize-none bg-transparent text-ui text-foreground outline-none",
-          "placeholder:text-muted-foreground leading-snug max-h-[160px]"
-        )}
-      />
-      <div className="flex items-center justify-between gap-2">
-        <div className="relative" ref={menuRef}>
+      {/* Single bordered row: textarea grows · model picker · send button */}
+      <div className="flex items-end gap-2 border border-border focus-within:border-[hsl(var(--smui-border-hover))] bg-background px-2 py-1.5 transition-colors">
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(e) => onValueChange(e.target.value)}
+          onKeyDown={onKeyDown}
+          placeholder={placeholder}
+          rows={1}
+          className={cn(
+            "flex-1 resize-none bg-transparent text-ui text-foreground outline-none",
+            "placeholder:text-muted-foreground leading-snug max-h-[160px] py-1",
+          )}
+        />
+
+        <div className="relative shrink-0" ref={menuRef}>
           {models && models.length > 0 && (
             <>
               <button
@@ -322,7 +324,7 @@ function ChatInput({
               {menuOpen && (
                 <ul
                   role="listbox"
-                  className="absolute bottom-full left-0 mb-1 bg-card border border-border min-w-[200px] z-10 py-1"
+                  className="absolute bottom-full right-0 mb-1 bg-card border border-border min-w-[200px] z-10 py-1"
                 >
                   {models.map((m) => (
                     <li
@@ -335,7 +337,7 @@ function ChatInput({
                       }}
                       className={cn(
                         "flex items-center justify-between gap-2 px-2.5 py-1.5 text-ui cursor-pointer hover:bg-accent transition-colors",
-                        m.id === model && "text-primary"
+                        m.id === model && "text-primary",
                       )}
                     >
                       <span>{m.label}</span>
@@ -351,15 +353,16 @@ function ChatInput({
             </>
           )}
         </div>
+
         <button
           type="submit"
           disabled={!canSend}
           aria-label="Send message"
           className={cn(
-            "flex items-center justify-center w-7 h-7 transition-colors",
+            "shrink-0 flex items-center justify-center w-7 h-7 transition-colors",
             canSend
               ? "bg-primary text-primary-foreground hover:opacity-90 cursor-pointer"
-              : "bg-secondary text-muted-foreground cursor-not-allowed"
+              : "bg-secondary text-muted-foreground cursor-not-allowed",
           )}
         >
           <ArrowUp className="w-3.5 h-3.5" />

@@ -1,3 +1,5 @@
+"use client";
+
 import { PersistedInput, PersistedTextarea } from "@/components/persisted-fields";
 import { Button } from "@/components/ui/button";
 import {
@@ -723,22 +725,37 @@ export function AccordionPanel() {
 }
 
 export function CommandPalettePanel() {
+  const openPalette = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("smui:open-command-palette"));
+    }
+  };
+
   return (
     <Card className="card-glow">
-      <CardHeader className="py-2.5 px-3.5">
+      <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3.5">
         <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
           command palette
         </CardTitle>
+        <CardDescription className="text-xs flex items-center gap-1.5">
+          <kbd className="text-label text-muted-foreground border border-border px-1 bg-background">
+            ctrl+k
+          </kbd>
+          <span className="text-muted-foreground">to open</span>
+        </CardDescription>
       </CardHeader>
       <CardContent className="pt-3.5">
-        <div className="bg-card border border-border w-full">
+        <button
+          type="button"
+          onClick={openPalette}
+          aria-label="Open command palette"
+          className="block w-full text-left bg-card border border-border hover:border-[hsl(var(--smui-border-hover))] transition-colors cursor-pointer"
+        >
           <div className="flex items-center gap-2 px-2.5 py-2 border-b border-border">
             <span className="text-ui text-muted-foreground">&gt;</span>
-            <input
-              type="text"
-              placeholder="type a command..."
-              className="text-sm bg-transparent border-none outline-none flex-1 text-foreground placeholder:text-muted-foreground"
-            />
+            <span className="text-sm flex-1 text-muted-foreground">
+              type a command...
+            </span>
           </div>
           <div className="text-label text-muted-foreground tracking-wider uppercase px-3 pt-2 pb-1">
             navigation
@@ -793,7 +810,7 @@ export function CommandPalettePanel() {
             </div>
           ))}
           <div className="p-1" />
-        </div>
+        </button>
       </CardContent>
     </Card>
   );

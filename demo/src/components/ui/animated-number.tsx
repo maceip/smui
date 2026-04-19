@@ -34,6 +34,9 @@ function AnimatedNumber({
 }: AnimatedNumberProps) {
   const [display, setDisplay] = React.useState(value)
   const rafRef = React.useRef<number | null>(null)
+  // `fromRef` tracks the CURRENT on-screen value so that if `value` changes
+  // mid-animation the next tween starts from where the eye left off, not
+  // from whatever the previous animation's stale `from` was.
   const fromRef = React.useRef(value)
 
   React.useEffect(() => {
@@ -47,6 +50,7 @@ function AnimatedNumber({
     }
 
     const from = fromRef.current
+    if (from === value) return
     const start = performance.now()
 
     function tick(now: number) {
@@ -54,6 +58,7 @@ function AnimatedNumber({
       // ease-out-cubic
       const eased = 1 - Math.pow(1 - t, 3)
       const next = from + (value - from) * eased
+      fromRef.current = next
       setDisplay(next)
       if (t < 1) {
         rafRef.current = requestAnimationFrame(tick)

@@ -119,7 +119,10 @@ export function AccentPicker({
 
   if (variant === "inline") {
     return (
-      <div className="flex items-center gap-1.5 text-xs text-muted-foreground tracking-widest uppercase">
+      <div
+        data-slot="accent-picker"
+        className="flex items-center gap-1.5 text-xs text-muted-foreground tracking-widest uppercase"
+      >
         <span>accent</span>
         {PRESETS.map((p) => (
           <button
@@ -178,7 +181,10 @@ export function AccentPicker({
   }
 
   return (
-    <div className="sticky top-12 z-40 flex items-center justify-center gap-1.5 py-2 px-5 bg-card border-b border-border text-xs text-muted-foreground tracking-widest uppercase">
+    <div
+      data-slot="accent-picker"
+      className="sticky top-12 z-40 flex items-center justify-center gap-1.5 py-2 px-5 bg-card border-b border-border text-xs text-muted-foreground tracking-widest uppercase"
+    >
       <span>accent</span>
       {PRESETS.map((p) => (
         <button

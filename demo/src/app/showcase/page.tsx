@@ -4,6 +4,8 @@ import * as React from "react"
 import Link from "next/link"
 import { AccentPicker } from "@/components/accent-picker"
 import { ThemeSwitcher } from "@/components/theme-switcher"
+import { ThemePresetSwitcher } from "@/components/theme-preset-switcher"
+import { openCommandPalette } from "@/components/command-palette"
 import {
   Card,
   CardHeader,
@@ -12,6 +14,7 @@ import {
   CardContent,
 } from "@/components/ui/card"
 import { TextShimmer } from "@/components/ui/text-shimmer"
+import { TextShimmerWave } from "@/components/ui/text-shimmer-wave"
 import { TextScramble } from "@/components/ui/text-scramble"
 import { AnimatedNumber } from "@/components/ui/animated-number"
 import { SlidingNumber } from "@/components/ui/sliding-number"
@@ -21,6 +24,10 @@ import { CodeLine } from "@/components/ui/code-line"
 import { RepoCard } from "@/components/ui/repo-card"
 import { CommitGraph, type CommitDay } from "@/components/ui/commit-graph"
 import { FileTree, type FileNode } from "@/components/ui/file-tree"
+import {
+  FloatingCompletion,
+  type CompletionItem,
+} from "@/components/ui/floating-completion"
 import {
   Chat,
   ChatMessages,
@@ -61,6 +68,16 @@ function Nav() {
         </Link>
       </div>
       <div className="flex items-center gap-2.5">
+        <button
+          type="button"
+          onClick={openCommandPalette}
+          className="text-xs text-muted-foreground px-2.5 py-1 bg-background border border-border flex items-center justify-between gap-2 min-w-[170px] hover:text-foreground hover:border-[hsl(var(--smui-border-hover))] transition-colors cursor-pointer"
+        >
+          <span>search...</span>
+          <kbd className="text-label text-muted-foreground border border-border px-1 bg-card">
+            ctrl+k
+          </kbd>
+        </button>
         <ThemeSwitcher />
         <span className="text-xs text-muted-foreground">v1.0.0</span>
       </div>
@@ -181,12 +198,128 @@ const MODELS: ChatModel[] = [
   { id: "haiku", label: "claude haiku 4.5", tag: "fast" },
 ]
 
+const SHELL_COMMANDS: CompletionItem[] = [
+  { name: "git status", description: "working tree", icon: "⬡", color: "terminal" },
+  { name: "git commit -m", description: "record changes", icon: "⬡", color: "terminal" },
+  { name: "git push", description: "update remote", icon: "⬡", color: "terminal" },
+  { name: "git pull --rebase", description: "fetch & rebase", icon: "⬡", color: "terminal" },
+  { name: "git checkout -b", description: "new branch", icon: "⬡", color: "amber" },
+  { name: "git log --oneline", description: "history", icon: "⬡", color: "cyan" },
+  { name: "npm run dev", description: "start dev server", icon: "▪", color: "pink" },
+  { name: "npm run build", description: "production build", icon: "▪", color: "pink" },
+  { name: "npm test", description: "run test suite", icon: "▪", color: "lime" },
+  { name: "cargo build --release", description: "optimized build", icon: "◆", color: "amber" },
+  { name: "cargo run", description: "execute binary", icon: "◆", color: "lime" },
+  { name: "docker compose up -d", description: "start services", icon: "◇", color: "cyan" },
+  { name: "ssh bridge", description: "connect to host", icon: "⌘", color: "teal" },
+  { name: "tail -f /var/log/system.log", description: "follow log", icon: "≡", color: "magenta" },
+]
+
 const SCRIPTED_ASSISTANT_REPLIES: string[] = [
   "Routing that through the primary subsystem. I'll keep you posted as I work.",
   "Got it — I've queued that up. Anything else you'd like checked while I'm here?",
   "Here's what I'd recommend: start with a small iteration, verify, then expand.",
   "Interesting. I've got three ways to approach that, but the simplest is probably best.",
 ]
+
+/* ------------------------------------------------------------------ */
+/*  Terminal autocomplete — FloatingCompletion wrapped around an       */
+/*  inline terminal-styled input.                                       */
+/* ------------------------------------------------------------------ */
+
+function TerminalAutocompleteDemo() {
+  const [value, setValue] = React.useState("")
+  const [open, setOpen] = React.useState(false)
+  const [history, setHistory] = React.useState<string[]>([
+    "smui terminal // tab or type to autocomplete",
+    "try: git, npm, cargo, ssh",
+  ])
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  // The query is the last word of the buffer (what we want to complete).
+  const currentWord = React.useMemo(() => {
+    const parts = value.split(/\s+/)
+    return parts[parts.length - 1] ?? ""
+  }, [value])
+
+  const handleSelect = (item: CompletionItem) => {
+    // Replace the last token with the selected command.
+    const parts = value.split(/\s+/)
+    parts[parts.length - 1] = item.name
+    setValue(parts.join(" ") + " ")
+    setOpen(false)
+    inputRef.current?.focus()
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Tab") {
+      e.preventDefault()
+      setOpen(true)
+      return
+    }
+    if (e.key === "Enter" && !open) {
+      e.preventDefault()
+      const cmd = value.trim()
+      if (cmd) {
+        setHistory((h) => [...h, `$ ${cmd}`])
+        setValue("")
+      }
+    }
+  }
+
+  return (
+    <div className="bg-[hsl(var(--smui-surface-0))] border border-border font-mono text-ui text-foreground p-3 min-h-[200px] flex flex-col">
+      {history.map((line, i) => (
+        <div
+          key={i}
+          className={
+            line.startsWith("$ ")
+              ? "text-foreground"
+              : "text-muted-foreground"
+          }
+        >
+          {line}
+        </div>
+      ))}
+      <FloatingCompletion
+        items={SHELL_COMMANDS}
+        query={currentWord}
+        open={open && currentWord.length > 0}
+        onSelect={handleSelect}
+        onDismiss={() => setOpen(false)}
+        maxVisible={6}
+        className="w-full"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-[hsl(var(--smui-green))] shrink-0">$</span>
+          <input
+            ref={inputRef}
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value)
+              setOpen(e.target.value.trim().length > 0)
+            }}
+            onKeyDown={handleKeyDown}
+            onFocus={() => {
+              if (currentWord.length > 0) setOpen(true)
+            }}
+            onBlur={() => {
+              // Let click events on completion items register first
+              setTimeout(() => setOpen(false), 150)
+            }}
+            placeholder="start typing a command..."
+            className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
+            spellCheck={false}
+            autoComplete="off"
+          />
+        </div>
+      </FloatingCompletion>
+      <div className="text-label text-muted-foreground tracking-wider mt-2">
+        tab toggles menu · ↑↓ navigate · enter picks · esc dismisses
+      </div>
+    </div>
+  )
+}
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                                */
@@ -270,7 +403,11 @@ export default function ShowcasePage() {
   return (
     <main>
       <Nav />
-      <AccentPicker />
+      <div className="sticky top-12 z-40 flex items-center justify-center gap-4 py-2 px-5 bg-card border-b border-border">
+        <ThemePresetSwitcher />
+        <span className="text-border">|</span>
+        <AccentPicker variant="inline" />
+      </div>
       <div className="accent-line" />
 
       <section className="py-10 px-6 max-w-[1000px] mx-auto">
@@ -288,11 +425,22 @@ export default function ShowcasePage() {
           id="text-shimmer"
           name="text shimmer"
           source="motion-primitives"
-          description="Sweeping gradient across static text — useful for 'thinking' or skeleton states."
+          description="Sweeping gradient across static text — useful for 'thinking' or skeleton states. Highlight color follows the active accent, so dramatic accents read better."
         >
           <TextShimmer className="text-heading font-medium">
             Calibrating subsystems…
           </TextShimmer>
+        </ShowcaseRow>
+
+        <ShowcaseRow
+          id="text-shimmer-wave"
+          name="text shimmer wave"
+          source="motion-primitives"
+          description="Per-character shimmer that ripples across the string from left to right."
+        >
+          <TextShimmerWave className="text-heading font-medium">
+            Synchronizing telemetry relay
+          </TextShimmerWave>
         </ShowcaseRow>
 
         <ShowcaseRow
@@ -302,9 +450,7 @@ export default function ShowcasePage() {
           description="Resolves random glyphs into target text. Re-triggers every few seconds below."
         >
           <div className="text-heading font-medium text-foreground">
-            <TextScramble trigger={scrambleText} duration={0.9}>
-              {scrambleText}
-            </TextScramble>
+            <TextScramble duration={0.9}>{scrambleText}</TextScramble>
           </div>
         </ShowcaseRow>
 
@@ -448,6 +594,15 @@ export default function ShowcasePage() {
             onSelect={() => {}}
             className="max-w-[320px]"
           />
+        </ShowcaseRow>
+
+        <ShowcaseRow
+          id="terminal-autocomplete"
+          name="terminal autocomplete"
+          source="smui"
+          description="Terminal-style input with inline FloatingCompletion — zsh-autosuggestions energy. Press tab to open, arrow keys to navigate, enter to pick."
+        >
+          <TerminalAutocompleteDemo />
         </ShowcaseRow>
 
         <ShowcaseRow
