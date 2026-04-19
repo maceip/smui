@@ -83,6 +83,12 @@ function Nav() {
         >
           dashboard
         </Link>
+        <Link
+          href="/showcase"
+          className="text-xs text-muted-foreground uppercase tracking-wider px-2.5 py-1.5 hover:text-foreground transition-colors"
+        >
+          showcase
+        </Link>
       </div>
       <div className="flex items-center gap-2.5">
         <div className="text-xs text-muted-foreground px-2.5 py-1 bg-background border border-border flex items-center justify-between min-w-[180px]">

@@ -250,6 +250,18 @@
   animation: blink 1s step-end infinite;
 }
 
+/* Text shimmer — animated gradient background-position sweep */
+@keyframes text-shimmer {
+  0% { background-position: 150% 0; }
+  100% { background-position: -50% 0; }
+}
+
+/* Infinite marquee slider */
+@keyframes infinite-slider {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100% - var(--gap, 1rem))); }
+}
+
 /* Selection style */
 ::selection {
   background: hsl(var(--smui-frost-2) / 0.2);

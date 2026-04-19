@@ -796,6 +796,12 @@ function Nav() {
         >
           patterns
         </a>
+        <a
+          href="/showcase"
+          className="text-xs text-muted-foreground uppercase tracking-wider px-2.5 py-1.5 hover:text-foreground transition-colors"
+        >
+          showcase
+        </a>
       </div>
       <div className="flex items-center gap-3">
         <LiveClock />
