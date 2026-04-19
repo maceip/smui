@@ -57,6 +57,11 @@ function Carousel({
     setActiveIndex(nearest)
   }, [])
 
+  // Count actual children — React.Children.count is stable as long as the
+  // list length doesn't change, so using it as a dep avoids the effect
+  // re-running on every parent re-render (which `children` would do).
+  const childCount = React.Children.count(children)
+
   React.useEffect(() => {
     const el = scrollerRef.current
     if (!el) return
@@ -79,7 +84,7 @@ function Carousel({
       ro.disconnect()
       cancelAnimationFrame(raf)
     }
-  }, [children, measureActive])
+  }, [childCount, measureActive])
 
   const scrollToIndex = React.useCallback(
     (i: number) => {

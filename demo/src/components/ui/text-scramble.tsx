@@ -51,14 +51,6 @@ function TextScramble({
 
   const [display, setDisplay] = React.useState(children)
 
-  // Keep tuning in refs so parent re-renders don't restart the loop.
-  const charsRef = React.useRef(characters)
-  const speedRef = React.useRef(speed)
-  const durationRef = React.useRef(duration)
-  charsRef.current = characters
-  speedRef.current = speed
-  durationRef.current = duration
-
   React.useEffect(() => {
     if (!autoPlay) {
       setDisplay(children)
@@ -77,10 +69,8 @@ function TextScramble({
     // obvious on the very next paint, even if RAF is slow to kick in.
     setDisplay(scrambleOf(target))
 
-    const localChars = charsRef.current
-    const durationMs = Math.max(1, durationRef.current * 1000)
-    const fps = speedRef.current
-    const frameInterval = 1000 / fps
+    const durationMs = Math.max(1, duration * 1000)
+    const frameInterval = 1000 / speed
 
     let raf = 0
     let lastTick = performance.now()
@@ -100,8 +90,7 @@ function TextScramble({
           if (i < revealCount || ch === " ") {
             out += ch
           } else {
-            out +=
-              localChars[Math.floor(Math.random() * localChars.length)]
+            out += characters[Math.floor(Math.random() * characters.length)]
           }
         }
         setDisplay(out)
@@ -115,7 +104,7 @@ function TextScramble({
 
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
-  }, [children, autoPlay, scrambleOf])
+  }, [children, autoPlay, characters, speed, duration, scrambleOf])
 
   return (
     <span

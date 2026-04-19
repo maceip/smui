@@ -356,6 +356,16 @@ export default function ShowcasePage() {
   const [busy, setBusy] = React.useState(false)
   const msgCounterRef = React.useRef(2)
   const assistantIndexRef = React.useRef(0)
+  const streamIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  )
+
+  // Clear any in-flight streaming on unmount so the showcase doesn't leak.
+  React.useEffect(() => {
+    return () => {
+      if (streamIntervalRef.current) clearInterval(streamIntervalRef.current)
+    }
+  }, [])
 
   const onSendMessage = React.useCallback(
     (text: string) => {
@@ -366,6 +376,9 @@ export default function ShowcasePage() {
       }
       setMessages((prev) => [...prev, userMsg])
       setBusy(true)
+
+      // Abort any in-flight stream before starting a new one.
+      if (streamIntervalRef.current) clearInterval(streamIntervalRef.current)
 
       // Stream a scripted reply one character at a time.
       const replyBody =
@@ -389,6 +402,7 @@ export default function ShowcasePage() {
         )
         if (i >= replyBody.length) {
           clearInterval(interval)
+          streamIntervalRef.current = null
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantId ? { ...m, streaming: false } : m
@@ -397,6 +411,7 @@ export default function ShowcasePage() {
           setBusy(false)
         }
       }, 22)
+      streamIntervalRef.current = interval
     },
     []
   )
