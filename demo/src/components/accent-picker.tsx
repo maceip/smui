@@ -24,64 +24,40 @@ const PRESETS = [
   { name: "Lime", hex: "#96d84a" },
 ];
 
-function hexToHSL(hex: string): string {
+function hexToHSLParts(hex: string): { h: number; s: number; l: number } {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
   const b = parseInt(hex.slice(5, 7), 16) / 255;
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const l = (max + min) / 2;
-  if (max === min) return `0 0% ${Math.round(l * 100)}%`;
+  if (max === min) return { h: 0, s: 0, l: Math.round(l * 100) };
   const d = max - min;
   const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
   let h = 0;
   if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
   else if (max === g) h = ((b - r) / d + 2) / 6;
   else h = ((r - g) / d + 4) / 6;
-  return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
-}
-
-function parseHSL(hsl: string): { h: number; s: number; l: number } {
-  const parts = hsl.split(/\s+/);
   return {
-    h: parseInt(parts[0]),
-    s: parseInt(parts[1]),
-    l: parseInt(parts[2]),
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
   };
 }
 
+function hexToHSL(hex: string): string {
+  const { h, s, l } = hexToHSLParts(hex);
+  return `${h} ${s}% ${l}%`;
+}
+
 function darkenForAccentBg(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h = 0;
-  const s = max === min ? 0 : (max - min) / (1 - Math.abs(max + min - 1));
-  if (max !== min) {
-    const d = max - min;
-    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-    else if (max === g) h = ((b - r) / d + 2) / 6;
-    else h = ((r - g) / d + 4) / 6;
-  }
-  return `${Math.round(h * 360)} ${Math.round(Math.min(s, 0.1) * 100)}% 16%`;
+  const { h, s } = hexToHSLParts(hex);
+  return `${h} ${Math.min(s, 10)}% 16%`;
 }
 
 function lightenForAccentBg(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h = 0;
-  const s = max === min ? 0 : (max - min) / (1 - Math.abs(max + min - 1));
-  if (max !== min) {
-    const d = max - min;
-    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-    else if (max === g) h = ((b - r) / d + 2) / 6;
-    else h = ((r - g) / d + 4) / 6;
-  }
-  return `${Math.round(h * 360)} ${Math.round(Math.min(s, 0.2) * 100)}% 90%`;
+  const { h, s } = hexToHSLParts(hex);
+  return `${h} ${Math.min(s, 20)}% 90%`;
 }
 
 export function AccentPicker({
@@ -104,13 +80,13 @@ export function AccentPicker({
     setActive(hex);
     const root = document.documentElement;
     const rawHsl = hexToHSL(hex);
-    const parsed = parseHSL(rawHsl);
+    const { h, s, l } = hexToHSLParts(hex);
 
     // In light mode, darken the accent color for better contrast
     const dark = isDark ?? root.classList.contains("dark");
     const hsl = dark
       ? rawHsl
-      : `${parsed.h} ${Math.min(parsed.s, 45)}% ${Math.min(parsed.l, 48)}%`;
+      : `${h} ${Math.min(s, 45)}% ${Math.min(l, 48)}%`;
 
     root.style.setProperty("--primary", `hsl(${hsl})`);
     root.style.setProperty("--ring", `hsl(${hsl})`);

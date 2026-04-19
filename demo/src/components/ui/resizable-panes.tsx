@@ -69,9 +69,6 @@ function usePaneGroup() {
 /*  PaneGroup                                                          */
 /* ------------------------------------------------------------------ */
 
-let groupCounter = 0
-let paneCounter = 0
-
 function PaneGroup({
   direction = "horizontal",
   onResize,
@@ -80,7 +77,6 @@ function PaneGroup({
   children,
   ...props
 }: PaneGroupProps) {
-  const groupId = React.useRef(`pg-${++groupCounter}`).current
   const containerRef = React.useRef<HTMLDivElement>(null)
 
   // Track pane configs in order of registration
@@ -90,7 +86,11 @@ function PaneGroup({
   // Sizes as percentages, keyed by pane id
   const [sizes, setSizes] = React.useState<Map<string, number>>(new Map())
   const sizesRef = React.useRef(sizes)
-  sizesRef.current = sizes
+  // Mirror the latest sizes into a ref so pointer handlers (which run outside
+  // render) can read the current value without closing over stale state.
+  React.useEffect(() => {
+    sizesRef.current = sizes
+  }, [sizes])
 
   // Collapsed state per pane + pre-collapse size memory
   const [collapsed, setCollapsed] = React.useState<Set<string>>(new Set())
@@ -434,6 +434,9 @@ function PaneGroup({
     if (isHandle) {
       const hi = paneIndex - 1
       rendered.push(
+        // cloneElement only attaches props; the handlers are not invoked during
+        // render, so the react-hooks/refs false-positive is safe to silence here.
+        // eslint-disable-next-line react-hooks/refs
         React.cloneElement(child as React.ReactElement<Record<string, unknown>>, {
           key: `handle-${hi}`,
           "data-handle-index": hi,
@@ -508,7 +511,9 @@ function Pane({
   ...props
 }: PaneProps) {
   const { direction, registerPane, unregisterPane, collapsedPanes } = usePaneGroup()
-  const id = React.useRef(`pane-${++paneCounter}`).current
+  // Sanitize React.useId() output (":r3:") into a CSS-safe custom-property segment.
+  const rawId = React.useId()
+  const id = `pane-${rawId.replace(/:/g, "")}`
   const isCollapsed = collapsedPanes.has(id)
 
   React.useEffect(() => {

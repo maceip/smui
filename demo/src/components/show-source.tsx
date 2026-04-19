@@ -1,11 +1,29 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Copy, Check } from "lucide-react";
 
 // NOTE: The `html` prop is generated server-side by shiki at build time from
 // hardcoded code strings in page.tsx. It never contains user-supplied content,
 // so dangerouslySetInnerHTML is safe here.
+
+// Ref-counted scroll lock so multiple open overlays don't clobber each other's
+// restore of document.body.style.overflow.
+let scrollLockCount = 0;
+let previousOverflow = "";
+function acquireScrollLock() {
+  if (scrollLockCount === 0) {
+    previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+  }
+  scrollLockCount++;
+}
+function releaseScrollLock() {
+  scrollLockCount = Math.max(0, scrollLockCount - 1);
+  if (scrollLockCount === 0) {
+    document.body.style.overflow = previousOverflow;
+  }
+}
 
 export function ShowSource({
   children,
@@ -18,21 +36,28 @@ export function ShowSource({
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const close = useCallback(() => setOpen(false), []);
 
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
+    acquireScrollLock();
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      releaseScrollLock();
     };
-  }, [open, close]);
+  }, [open]);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <>
@@ -67,7 +92,12 @@ export function ShowSource({
                   onClick={async () => {
                     await navigator.clipboard.writeText(code);
                     setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
+                    if (copyTimeoutRef.current)
+                      clearTimeout(copyTimeoutRef.current);
+                    copyTimeoutRef.current = setTimeout(
+                      () => setCopied(false),
+                      2000,
+                    );
                   }}
                   className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   title="Copy"

@@ -37,6 +37,12 @@ import {
 import { PaneGroup, Pane, PaneHandle } from "@/components/ui/resizable-panes";
 import { Gauge } from "@/components/ui/gauge";
 import { Sparkline } from "@/components/ui/sparkline";
+import { Terminal } from "@/components/ui/terminal";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { useDialKit } from "dialkit";
 import {
   Compass,
@@ -209,10 +215,13 @@ function GaugeSparklineDemo() {
   });
 
   return (
-    <Card className="card-glow">
+    <Card id="gauge-sparkline" className="card-glow scroll-mt-14">
       <CardHeader className="py-2.5 px-3.5">
-        <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+        <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal flex items-center gap-2">
           component // gauge + sparkline
+          <span className="text-label tracking-wider uppercase px-1.5 py-px border border-[hsl(var(--smui-frost-2)/0.35)] text-[hsl(var(--smui-frost-2))]">
+            new
+          </span>
         </CardTitle>
         <CardDescription className="text-xs">
           live-tweakable via DialKit panel (bottom-right)
@@ -339,10 +348,13 @@ function ResizablePanesDemo() {
   const dir = (dial.direction as string) === "vertical" ? "vertical" : "horizontal" as const;
 
   return (
-    <Card className="card-glow">
+    <Card id="resizable-panes" className="card-glow scroll-mt-14">
       <CardHeader className="py-2.5 px-3.5">
-        <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+        <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal flex items-center gap-2">
           component // resizable panes
+          <span className="text-label tracking-wider uppercase px-1.5 py-px border border-[hsl(var(--smui-frost-2)/0.35)] text-[hsl(var(--smui-frost-2))]">
+            new
+          </span>
         </CardTitle>
         <CardDescription className="text-xs">
           drag handles to resize · double-click to collapse · keyboard accessible
@@ -427,6 +439,43 @@ export default function DashboardPage() {
     ref: "text-[hsl(var(--smui-green))] border-[hsl(var(--smui-green)/0.3)]",
   };
 
+  const NEW_FEATURES: {
+    name: string;
+    anchor: string;
+    description: string;
+  }[] = [
+    {
+      name: "Terminal",
+      anchor: "terminal",
+      description: "xterm.js bridge with SMUI theme tokens",
+    },
+    {
+      name: "Popover",
+      anchor: "popover",
+      description: "Radix-backed popover primitive",
+    },
+    {
+      name: "Resizable Panes",
+      anchor: "resizable-panes",
+      description: "drag, collapse, and persist layouts",
+    },
+    {
+      name: "Gauge",
+      anchor: "gauge-sparkline",
+      description: "animated arc gauge with thresholds",
+    },
+    {
+      name: "Sparkline",
+      anchor: "gauge-sparkline",
+      description: "line / area / bar micro-charts",
+    },
+    {
+      name: "Floating Completion",
+      anchor: "floating-completion",
+      description: "fuzzy-filter autocomplete menu",
+    },
+  ];
+
   return (
     <main>
       <Nav />
@@ -443,6 +492,58 @@ export default function DashboardPage() {
         <p className="text-sm text-muted-foreground mb-7">
           Sidebar navigation, data readouts, tables, charts combined.
         </p>
+
+        {/* What's new banner — also doubles as the Popover demo */}
+        <div className="mb-3 flex flex-wrap items-center gap-2 px-3 py-2 bg-card border border-border">
+          <span className="text-label text-muted-foreground tracking-[1.5px] uppercase shrink-0">
+            what&apos;s new
+          </span>
+          <Separator
+            orientation="vertical"
+            className="h-3.5 bg-border hidden sm:inline-block"
+          />
+          <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
+            {NEW_FEATURES.map((f) => (
+              <a
+                key={f.name}
+                href={`#${f.anchor}`}
+                className="text-label tracking-wider uppercase px-1.5 py-px border border-[hsl(var(--smui-frost-2)/0.35)] text-[hsl(var(--smui-frost-2))] hover:bg-[hsl(var(--smui-frost-2)/0.08)] transition-colors"
+                title={f.description}
+              >
+                {f.name}
+              </a>
+            ))}
+          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-6 px-2 text-xs">
+                details
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0">
+              <div className="px-3 py-2 border-b border-border">
+                <div className="text-label text-muted-foreground tracking-[1.5px] uppercase">
+                  recently added
+                </div>
+              </div>
+              <ul className="py-1">
+                {NEW_FEATURES.map((f) => (
+                  <li key={f.name}>
+                    <a
+                      href={`#${f.anchor}`}
+                      className="flex items-baseline gap-2 px-3 py-1.5 text-ui hover:bg-accent transition-colors"
+                    >
+                      <span className="text-primary">{f.name}</span>
+                      <span className="text-label text-muted-foreground">
+                        — {f.description}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </PopoverContent>
+          </Popover>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-2">
           {/* Sidebar */}
@@ -699,10 +800,13 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
             {/* Floating Completion */}
-            <Card className="card-glow">
+            <Card id="floating-completion" className="card-glow scroll-mt-14">
               <CardHeader className="py-2.5 px-3.5">
-                <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+                <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal flex items-center gap-2">
                   component // floating completion
+                  <span className="text-label tracking-wider uppercase px-1.5 py-px border border-[hsl(var(--smui-frost-2)/0.35)] text-[hsl(var(--smui-frost-2))]">
+                    new
+                  </span>
                 </CardTitle>
                 <CardDescription className="text-xs">
                   melon-style autocomplete — fuzzy filter, keyboard nav, collision-aware
@@ -749,6 +853,131 @@ export default function DashboardPage() {
 
             {/* Resizable Panes */}
             <ResizablePanesDemo />
+
+            {/* Terminal */}
+            <Card id="terminal" className="card-glow scroll-mt-14">
+              <CardHeader className="py-2.5 px-3.5">
+                <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal flex items-center gap-2">
+                  component // terminal
+                  <span className="text-label tracking-wider uppercase px-1.5 py-px border border-[hsl(var(--smui-frost-2)/0.35)] text-[hsl(var(--smui-frost-2))]">
+                    new
+                  </span>
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  xterm.js wrapped with SMUI theme tokens · transparent background
+                  · live theme sync
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="bg-black/35" style={{ height: 240 }}>
+                  <Terminal
+                    onReady={(t) => {
+                      t.writeln(
+                        "\x1b[1;36m┌──────────────────────────────────┐\x1b[0m",
+                      );
+                      t.writeln(
+                        "\x1b[1;36m│\x1b[0m  smui terminal \x1b[32m●\x1b[0m ready          \x1b[1;36m│\x1b[0m",
+                      );
+                      t.writeln(
+                        "\x1b[1;36m└──────────────────────────────────┘\x1b[0m",
+                      );
+                      t.writeln("");
+                      t.writeln(
+                        "\x1b[90mSwitch light/dark — colors follow SMUI tokens.\x1b[0m",
+                      );
+                      t.writeln(
+                        "\x1b[31mred\x1b[0m \x1b[32mgreen\x1b[0m \x1b[33myellow\x1b[0m \x1b[34mblue\x1b[0m \x1b[35mmagenta\x1b[0m \x1b[36mcyan\x1b[0m",
+                      );
+                      t.writeln("");
+                      t.write("\x1b[32m$\x1b[0m ");
+                      t.onData((data: string) => {
+                        if (data === "\r") {
+                          t.writeln("");
+                          t.write("\x1b[32m$\x1b[0m ");
+                        } else if (data === "\x7f") {
+                          t.write("\b \b");
+                        } else {
+                          t.write(data);
+                        }
+                      });
+                    }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Popover */}
+            <Card id="popover" className="card-glow scroll-mt-14">
+              <CardHeader className="py-2.5 px-3.5">
+                <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal flex items-center gap-2">
+                  component // popover
+                  <span className="text-label tracking-wider uppercase px-1.5 py-px border border-[hsl(var(--smui-frost-2)/0.35)] text-[hsl(var(--smui-frost-2))]">
+                    new
+                  </span>
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Radix-backed · portaled · collision-aware placement
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="bg-black/35 p-6 flex items-center justify-center gap-3 flex-wrap">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        contact
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <div className="text-label text-muted-foreground tracking-[1.5px] uppercase mb-2">
+                        comms channel
+                      </div>
+                      <div className="space-y-1 text-ui">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">freq</span>
+                          <span className="tabular-nums">142.8 MHz</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">signal</span>
+                          <span className="text-[hsl(var(--smui-green))]">
+                            strong
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">latency</span>
+                          <span className="tabular-nums">12ms</span>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        ship status
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64">
+                      <div className="flex items-center gap-3">
+                        <Gauge value={72} color="cyan" size="sm" strokeWidth={3} />
+                        <div>
+                          <div className="text-label text-muted-foreground tracking-[1.5px] uppercase">
+                            reactor
+                          </div>
+                          <Sparkline
+                            data={SPARK_DATA}
+                            variant="area"
+                            color="cyan"
+                            width={120}
+                            height={20}
+                            animated
+                          />
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </CardContent>
+            </Card>
 
           </div>
         </div>
