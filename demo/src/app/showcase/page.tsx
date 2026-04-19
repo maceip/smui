@@ -28,6 +28,7 @@ import {
   FloatingCompletion,
   type CompletionItem,
 } from "@/components/ui/floating-completion"
+import { StatusRail } from "@/components/ui/status-rail"
 import {
   Chat,
   ChatMessages,
@@ -606,6 +607,32 @@ export default function ShowcasePage() {
           description="Terminal-style input with inline FloatingCompletion — zsh-autosuggestions energy. Press tab to open, arrow keys to navigate, enter to pick."
         >
           <TerminalAutocompleteDemo />
+        </ShowcaseRow>
+
+        <ShowcaseRow
+          id="status-rail"
+          name="status rail"
+          source="smui"
+          description="Sticky bottom rail for global status + live dictation. Click the mic to stream SpeechRecognition transcripts; the waveform is driven by the actual microphone via AudioContext + AnalyserNode. Rendered here with position=&quot;static&quot;; ship as the default position=&quot;fixed&quot; at the root layout."
+        >
+          <div className="bg-[hsl(var(--smui-surface-0))] border border-border min-h-[120px] flex flex-col justify-end">
+            <div className="flex-1 p-3 text-label text-muted-foreground tracking-wider">
+              page content here — the rail anchors to the bottom
+            </div>
+            <StatusRail position="static">
+              <span className="inline-flex items-center gap-1 normal-case tracking-normal">
+                <span className="inline-block w-[5px] h-[5px] rounded-full bg-[hsl(var(--smui-green))]" />
+                connected
+              </span>
+              <span className="hidden sm:inline">·</span>
+              <span className="hidden sm:inline">
+                agent / bridge-01
+              </span>
+            </StatusRail>
+          </div>
+          <div className="text-label text-muted-foreground tracking-wider mt-2">
+            requires https (or localhost) for microphone + webkit SpeechRecognition
+          </div>
         </ShowcaseRow>
 
         <ShowcaseRow
