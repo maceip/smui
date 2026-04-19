@@ -329,10 +329,12 @@ export default function ShowcasePage() {
   /* Animated numbers */
   const [tick, setTick] = React.useState(0)
   React.useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 2500)
+    const id = setInterval(() => setTick((t) => t + 1), 1800)
     return () => clearInterval(id)
   }, [])
-  const animatedValue = 42_000 + Math.round(Math.sin(tick) * 1200) + tick * 17
+  // Big, obvious deltas so the tween is clearly visible every cycle.
+  const animatedValue =
+    50_000 + Math.round(Math.sin(tick * 0.9) * 12_000) + tick * 137
   const slidingValue = 1024 + tick * 3
 
   /* Scramble re-trigger */
@@ -462,6 +464,7 @@ export default function ShowcasePage() {
         >
           <AnimatedNumber
             value={animatedValue}
+            duration={1400}
             className="text-stat font-medium text-primary"
             prefix="$"
           />

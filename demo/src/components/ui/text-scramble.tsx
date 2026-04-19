@@ -33,10 +33,25 @@ function TextScramble({
   className,
   ...props
 }: TextScrambleProps) {
+  // Prime the display with a fully-scrambled string so the very first
+  // paint after `children` changes is visibly different from the target
+  // — nothing worse than a "scramble" that just snaps words.
+  const scrambleOf = React.useCallback(
+    (target: string) => {
+      let out = ""
+      for (let i = 0; i < target.length; i++) {
+        out += target[i] === " "
+          ? " "
+          : characters[Math.floor(Math.random() * characters.length)]
+      }
+      return out
+    },
+    [characters],
+  )
+
   const [display, setDisplay] = React.useState(children)
 
-  // Keep the latest tuning in refs so the animation loop doesn't restart
-  // just because a parent re-renders.
+  // Keep tuning in refs so parent re-renders don't restart the loop.
   const charsRef = React.useRef(characters)
   const speedRef = React.useRef(speed)
   const durationRef = React.useRef(duration)
@@ -49,7 +64,6 @@ function TextScramble({
       setDisplay(children)
       return
     }
-
     if (
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
@@ -59,40 +73,49 @@ function TextScramble({
     }
 
     const target = children
+    // Snap to a fully-scrambled view immediately so the animation is
+    // obvious on the very next paint, even if RAF is slow to kick in.
+    setDisplay(scrambleOf(target))
+
     const localChars = charsRef.current
-    const frameInterval = 1000 / speedRef.current
-    const totalFrames = Math.max(
-      1,
-      Math.round(durationRef.current * speedRef.current),
-    )
+    const durationMs = Math.max(1, durationRef.current * 1000)
+    const fps = speedRef.current
+    const frameInterval = 1000 / fps
 
-    let frame = 0
-    let timer: ReturnType<typeof setInterval> | null = null
+    let raf = 0
+    let lastTick = performance.now()
+    const start = lastTick
 
-    timer = setInterval(() => {
-      frame++
-      const progress = frame / totalFrames
-      const revealCount = Math.floor(progress * target.length)
-      let out = ""
-      for (let i = 0; i < target.length; i++) {
-        const ch = target[i]
-        if (i < revealCount || ch === " ") {
-          out += ch
-        } else {
-          out += localChars[Math.floor(Math.random() * localChars.length)]
+    const step = (now: number) => {
+      if (now - lastTick >= frameInterval) {
+        lastTick = now
+        const progress = Math.min((now - start) / durationMs, 1)
+        // Hold full-scramble for the first 20% of the duration so the
+        // effect is visibly "garbled" before the reveal starts.
+        const revealT = Math.max(0, (progress - 0.2) / 0.8)
+        const revealCount = Math.floor(revealT * target.length)
+        let out = ""
+        for (let i = 0; i < target.length; i++) {
+          const ch = target[i]
+          if (i < revealCount || ch === " ") {
+            out += ch
+          } else {
+            out +=
+              localChars[Math.floor(Math.random() * localChars.length)]
+          }
+        }
+        setDisplay(out)
+        if (progress >= 1) {
+          setDisplay(target)
+          return
         }
       }
-      setDisplay(out)
-      if (frame >= totalFrames) {
-        setDisplay(target)
-        if (timer) clearInterval(timer)
-      }
-    }, frameInterval)
-
-    return () => {
-      if (timer) clearInterval(timer)
+      raf = requestAnimationFrame(step)
     }
-  }, [children, autoPlay])
+
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
+  }, [children, autoPlay, scrambleOf])
 
   return (
     <span
