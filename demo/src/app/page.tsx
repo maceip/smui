@@ -716,12 +716,12 @@ function Nav() {
         >
           components
         </a>
-        <a
+        <Link
           href="/dashboard"
           className="text-xs text-muted-foreground uppercase tracking-wider px-2.5 py-1.5 hover:text-foreground transition-colors"
         >
           dashboard
-        </a>
+        </Link>
         <a
           href="#setup"
           className="text-xs text-muted-foreground uppercase tracking-wider px-2.5 py-1.5 hover:text-foreground transition-colors"
@@ -734,12 +734,12 @@ function Nav() {
         >
           patterns
         </a>
-        <a
+        <Link
           href="/showcase"
           className="text-xs text-muted-foreground uppercase tracking-wider px-2.5 py-1.5 hover:text-foreground transition-colors"
         >
           showcase
-        </a>
+        </Link>
       </div>
       <div className="flex items-center gap-3">
         <NavSearchButton />
@@ -1435,13 +1435,13 @@ export default async function Home() {
           charts, tables, dialogs, resizable panes, and terminal — all driven by
           SMUI tokens.
         </p>
-        <a
+        <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 text-ui tracking-wider uppercase px-3 py-2 bg-card border border-border text-primary hover:border-[hsl(var(--smui-border-hover))] transition-colors"
         >
           open full dashboard
           <span aria-hidden>→</span>
-        </a>
+        </Link>
       </section>
 
       <hr className="border-none h-px bg-border m-0" />
@@ -1452,14 +1452,14 @@ export default async function Home() {
 
       <hr className="border-none h-px bg-border m-0" />
       <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground tracking-wider">
-        smui // inspired by{" "}
+        {"smui // inspired by "}
         <a
           href="https://smui.statico.io"
           className="text-primary hover:text-primary/80 transition-colors"
         >
           spacemolt
         </a>{" "}
-        // public domain
+        {"// public domain"}
         <div className="flex justify-center gap-4 mt-2">
           <a
             href="https://github.com/statico/smui"

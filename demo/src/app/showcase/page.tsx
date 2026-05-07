@@ -13,6 +13,114 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Toggle } from "@/components/ui/toggle"
+import { Progress } from "@/components/ui/progress"
+import { Slider } from "@/components/ui/slider"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+} from "@/components/ui/avatar"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from "@/components/ui/command"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Pane, PaneGroup, PaneHandle } from "@/components/ui/resizable-panes"
+import { Separator } from "@/components/ui/separator"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Sparkline } from "@/components/ui/sparkline"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import { Terminal } from "@/components/ui/terminal"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { TextShimmer } from "@/components/ui/text-shimmer"
 import { TextShimmerWave } from "@/components/ui/text-shimmer-wave"
 import { TextScramble } from "@/components/ui/text-scramble"
@@ -24,6 +132,7 @@ import { CodeLine } from "@/components/ui/code-line"
 import { RepoCard } from "@/components/ui/repo-card"
 import { CommitGraph, type CommitDay } from "@/components/ui/commit-graph"
 import { FileTree, type FileNode } from "@/components/ui/file-tree"
+import { Gauge } from "@/components/ui/gauge"
 import {
   FloatingCompletion,
   type CompletionItem,
@@ -223,6 +332,66 @@ const SCRIPTED_ASSISTANT_REPLIES: string[] = [
   "Interesting. I've got three ways to approach that, but the simplest is probably best.",
 ]
 
+const COMPONENT_GROUPS = [
+  {
+    id: "foundation-primitives",
+    label: "foundation primitives",
+    items: [
+      "Accordion",
+      "Alert",
+      "Avatar",
+      "Badge",
+      "Breadcrumb",
+      "Button",
+      "Card",
+      "Checkbox",
+      "Input",
+      "Progress",
+      "Separator",
+      "Skeleton",
+      "Slider",
+      "Table",
+      "Tabs",
+      "Textarea",
+      "Toggle",
+      "Tooltip",
+    ],
+  },
+  {
+    id: "navigation-overlays",
+    label: "navigation + overlays",
+    items: ["Command", "Dialog", "Pagination", "Popover", "Sheet", "Sidebar"],
+  },
+  {
+    id: "data-motion-shell",
+    label: "data, motion + shell",
+    items: [
+      "AnimatedNumber",
+      "Carousel",
+      "CodeLine",
+      "CommitGraph",
+      "FileTree",
+      "FloatingCompletion",
+      "Gauge",
+      "InfiniteSlider",
+      "RepoCard",
+      "ResizablePanes",
+      "SlidingNumber",
+      "Sparkline",
+      "StatusRail",
+      "Terminal",
+      "TextScramble",
+      "TextShimmer",
+      "TextShimmerWave",
+    ],
+  },
+  {
+    id: "chat",
+    label: "agentic interfaces",
+    items: ["Chat", "ChatMessages", "ChatMessage", "ChatInput"],
+  },
+]
+
 /* ------------------------------------------------------------------ */
 /*  Terminal autocomplete — FloatingCompletion wrapped around an       */
 /*  inline terminal-styled input.                                       */
@@ -318,6 +487,519 @@ function TerminalAutocompleteDemo() {
       <div className="text-label text-muted-foreground tracking-wider mt-2">
         tab toggles menu · ↑↓ navigate · enter picks · esc dismisses
       </div>
+    </div>
+  )
+}
+
+function ComponentIndex() {
+  return (
+    <Card className="card-glow mb-3">
+      <CardHeader className="py-2.5 px-3.5">
+        <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+          gallery index // all components
+        </CardTitle>
+        <CardDescription className="text-xs">
+          primitives, overlays, data views, shell widgets, and custom additions
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-3 md:grid-cols-2">
+        {COMPONENT_GROUPS.map((group) => (
+          <a
+            key={group.id}
+            href={`#${group.id}`}
+            className="block border border-border bg-background p-3 hover:border-[hsl(var(--smui-border-hover))] transition-colors"
+          >
+            <div className="text-label text-muted-foreground tracking-wider uppercase mb-2">
+              {group.label}
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {group.items.map((item) => (
+                <Badge key={item} variant="outline">
+                  {item}
+                </Badge>
+              ))}
+            </div>
+          </a>
+        ))}
+      </CardContent>
+    </Card>
+  )
+}
+
+function FoundationPrimitivesGallery() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            card / button / badge
+          </CardTitle>
+          <CardDescription className="text-xs">base controls</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm">default</Button>
+            <Button size="sm" variant="outline">
+              outline
+            </Button>
+            <Button size="sm" variant="terminal">
+              terminal
+            </Button>
+            <Button size="sm" variant="amber">
+              amber
+            </Button>
+            <Button size="sm" variant="crimson">
+              crimson
+            </Button>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              "terminal",
+              "amber",
+              "cyan",
+              "pink",
+              "magenta",
+              "crimson",
+              "teal",
+              "indigo",
+              "lime",
+            ].map((variant) => (
+              <Badge
+                key={variant}
+                variant={
+                  variant as
+                    | "terminal"
+                    | "amber"
+                    | "cyan"
+                    | "pink"
+                    | "magenta"
+                    | "crimson"
+                    | "teal"
+                    | "indigo"
+                    | "lime"
+                }
+              >
+                {variant}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            input / textarea / checkbox / toggle
+          </CardTitle>
+          <CardDescription className="text-xs">forms</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <Input defaultValue="NCC-48271" aria-label="Demo input" />
+            <Textarea
+              defaultValue="Station Helix clearance granted."
+              aria-label="Demo textarea"
+              className="min-h-9"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="flex items-center gap-2 text-ui">
+              <Checkbox defaultChecked />
+              synced
+            </label>
+            <Toggle defaultPressed size="sm">
+              arm
+            </Toggle>
+            <Toggle size="sm" variant="outline">
+              ghost
+            </Toggle>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            tabs / accordion / alert
+          </CardTitle>
+          <CardDescription className="text-xs">disclosure</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Tabs defaultValue="nav">
+            <TabsList variant="line">
+              <TabsTrigger value="nav">nav</TabsTrigger>
+              <TabsTrigger value="eng">eng</TabsTrigger>
+              <TabsTrigger value="comms">comms</TabsTrigger>
+            </TabsList>
+            <TabsContent value="nav">
+              <p className="text-xs text-muted-foreground">
+                Route plotted through the frost corridor.
+              </p>
+            </TabsContent>
+            <TabsContent value="eng">
+              <p className="text-xs text-muted-foreground">
+                Reactor output holding at 72 percent.
+              </p>
+            </TabsContent>
+            <TabsContent value="comms">
+              <p className="text-xs text-muted-foreground">
+                Relay packet received from station control.
+              </p>
+            </TabsContent>
+          </Tabs>
+          <Accordion type="single" collapsible defaultValue="one">
+            <AccordionItem value="one">
+              <AccordionTrigger>Primary systems</AccordionTrigger>
+              <AccordionContent>
+                Navigation, shields, and comms are online.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="two">
+              <AccordionTrigger>Auxiliary systems</AccordionTrigger>
+              <AccordionContent>
+                Cargo scanners and dock clamps are standing by.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Alert variant="cyan">
+            <AlertTitle>Telemetry stable</AlertTitle>
+            <AlertDescription>
+              Frost-channel uplink reports nominal latency.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            table / avatar / progress / slider
+          </CardTitle>
+          <CardDescription className="text-xs">data primitives</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2">
+            {["KV", "LC", "SO"].map((initials, i) => (
+              <Avatar key={initials}>
+                <AvatarFallback>{initials}</AvatarFallback>
+                {i === 0 && <AvatarBadge />}
+              </Avatar>
+            ))}
+            <Separator orientation="vertical" className="h-7" />
+            <div className="flex-1">
+              <Progress value={72} />
+              <Slider defaultValue={[68]} max={100} step={1} className="mt-3" />
+            </div>
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>system</TableHead>
+                <TableHead>state</TableHead>
+                <TableHead>load</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[
+                ["reactor", "nominal", "72%"],
+                ["shields", "warning", "41%"],
+                ["cargo", "idle", "18%"],
+              ].map(([system, state, load]) => (
+                <TableRow key={system}>
+                  <TableCell>{system}</TableCell>
+                  <TableCell>{state}</TableCell>
+                  <TableCell className="text-primary">{load}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <div className="flex-1">
+              <Skeleton className="h-2.5 w-2/3 mb-1.5" />
+              <Skeleton className="h-2.5 w-1/2" />
+            </div>
+            <Tooltip open>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="sm">
+                  tooltip
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>SMUI tooltip surface</TooltipContent>
+            </Tooltip>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function NavigationOverlayGallery() {
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            breadcrumb / pagination / command
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">systems</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">gamma draconis</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage>station helix</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">1</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#" isActive>
+                  2
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+          <Command className="border border-border">
+            <CommandInput placeholder="run a bridge command..." />
+            <CommandList>
+              <CommandEmpty>No command found.</CommandEmpty>
+              <CommandGroup heading="Navigation">
+                <CommandItem>Open dashboard</CommandItem>
+                <CommandItem>
+                  Jump to weapons <CommandShortcut>⌘3</CommandShortcut>
+                </CommandItem>
+                <CommandItem>Scan cargo hold</CommandItem>
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            dialog / sheet / popover
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                open dialog
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Commit course change?</DialogTitle>
+                <DialogDescription>
+                  This demo shows the dialog surface, title, description, and
+                  footer actions.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" size="sm">
+                  cancel
+                </Button>
+                <Button size="sm">commit</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm">
+                open sheet
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Station manifest</SheetTitle>
+                <SheetDescription>
+                  A side panel for dense operational controls.
+                </SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm">
+                open popover
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64">
+              <div className="text-label text-muted-foreground tracking-wider uppercase mb-1">
+                route note
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Popovers inherit the sharp SMUI surface treatment.
+              </p>
+            </PopoverContent>
+          </Popover>
+        </CardContent>
+      </Card>
+
+      <div className="xl:col-span-2">
+        <SidebarProvider defaultOpen className="!min-h-[260px] overflow-hidden border border-border bg-background">
+          <Sidebar collapsible="icon" variant="inset">
+            <SidebarHeader>
+              <div className="px-2 py-1 text-xs tracking-[2px] uppercase">
+                smui
+              </div>
+            </SidebarHeader>
+            <SidebarSeparator />
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel>bridge</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {["overview", "navigation", "weapons", "cargo"].map(
+                      (item, i) => (
+                        <SidebarMenuItem key={item}>
+                          <SidebarMenuButton isActive={i === 0}>
+                            <span className="size-2 bg-primary" />
+                            <span>{item}</span>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      )
+                    )}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+            <SidebarRail />
+          </Sidebar>
+          <SidebarInset className="!min-h-[260px] bg-transparent">
+            <div className="flex items-center gap-2 border-b border-border p-2">
+              <SidebarTrigger />
+              <span className="text-label text-muted-foreground tracking-wider uppercase">
+                sidebar provider / inset / rail
+              </span>
+            </div>
+            <div className="p-4 text-sm text-muted-foreground">
+              The shadcn-style sidebar components are included and themed for
+              dense terminal dashboards.
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+      </div>
+    </div>
+  )
+}
+
+function DataMotionShellGallery() {
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            gauge / sparkline
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap items-center gap-6">
+          <Gauge
+            value={72}
+            color="cyan"
+            label="reactor"
+            size="lg"
+            thresholds={[
+              { value: 30, color: "crimson", label: "low" },
+              { value: 80, color: "amber", label: "high" },
+            ]}
+          />
+          <div className="space-y-3">
+            <Sparkline
+              data={[12, 18, 14, 22, 19, 28, 24, 32, 29, 38, 35, 42]}
+              width={220}
+              height={56}
+              variant="area"
+              color="terminal"
+              showEndDot
+              showRange
+            />
+            <Sparkline
+              data={[
+                { value: 45 },
+                { value: 62 },
+                { value: 38 },
+                { value: 80, color: "amber" },
+                { value: 55 },
+                { value: 70 },
+                { value: 48, color: "cyan" },
+              ]}
+              width={220}
+              height={48}
+              variant="bar"
+              color="pink"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            resizable panes
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PaneGroup className="h-[220px] border border-border bg-background">
+            <Pane defaultSize={35} minSize={20}>
+              <div className="h-full p-3 text-label text-muted-foreground tracking-wider uppercase">
+                nav pane
+              </div>
+            </Pane>
+            <PaneHandle />
+            <Pane defaultSize={65} minSize={30}>
+              <div className="h-full p-3 text-ui">
+                Drag the divider to resize this shell layout.
+              </div>
+            </Pane>
+          </PaneGroup>
+        </CardContent>
+      </Card>
+
+      <Card className="xl:col-span-2">
+        <CardHeader className="py-2.5 px-3.5">
+          <CardTitle className="text-xs text-muted-foreground tracking-[1.5px] uppercase font-normal">
+            terminal
+          </CardTitle>
+          <CardDescription className="text-xs">
+            xterm wrapper with SMUI theme tokens
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[220px] border border-border bg-background">
+            <Terminal
+              webgl={false}
+              onReady={(terminal) => {
+                terminal.writeln("smui terminal // ready")
+                terminal.writeln("$ npm run pages:build")
+                terminal.writeln("static gallery exported to ./out")
+              }}
+            />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
@@ -421,8 +1103,38 @@ export default function ShowcasePage() {
           component gallery
         </h2>
         <p className="text-sm text-muted-foreground mb-6">
-          Every newly-added component, one per line, styled with SMUI tokens.
+          Every component in the library, including the custom components built
+          for SMUI, styled with SMUI tokens and ready for GitHub Pages.
         </p>
+
+        <ComponentIndex />
+
+        <ShowcaseRow
+          id="foundation-primitives"
+          name="foundation primitives"
+          source="shadcn/ui + smui"
+          description="The base components that power forms, cards, disclosure, feedback, data tables, and simple status views."
+        >
+          <FoundationPrimitivesGallery />
+        </ShowcaseRow>
+
+        <ShowcaseRow
+          id="navigation-overlays"
+          name="navigation + overlays"
+          source="shadcn/ui + smui"
+          description="Command menus, dialogs, sheets, popovers, pagination, breadcrumbs, and the themed dashboard sidebar."
+        >
+          <NavigationOverlayGallery />
+        </ShowcaseRow>
+
+        <ShowcaseRow
+          id="data-motion-shell"
+          name="data, motion + shell"
+          source="smui custom"
+          description="Custom widgets for operational dashboards: gauges, sparklines, resizable panes, terminal, and motion/data primitives."
+        >
+          <DataMotionShellGallery />
+        </ShowcaseRow>
 
         <ShowcaseRow
           id="text-shimmer"
