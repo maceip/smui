@@ -62,7 +62,7 @@ The demo app statically exports the component gallery for GitHub Pages:
 npm run pages:build
 ```
 
-The Pages workflow builds `demo/out` from `/showcase`, including the base shadcn/ui components and the custom SMUI components. It sets `NEXT_PUBLIC_BASE_PATH` to `/<repo>` for project Pages URLs; set it to an empty value in the workflow if publishing behind a custom domain.
+The `Deploy gallery to GitHub Pages` workflow can be run manually from any branch. It builds `demo/out` from `/showcase`, including the base shadcn/ui components and the custom SMUI components. By default it sets `NEXT_PUBLIC_BASE_PATH` to `/<repo>` for project Pages URLs; pass `/` as the `base_path` input when publishing behind a custom domain.
 
 ## License
 

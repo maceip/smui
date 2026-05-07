@@ -1,10 +1,14 @@
-name: Deploy component gallery to GitHub Pages
+name: Deploy gallery to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      base_path:
+        description: "Base path for project Pages, for example /smui. Use / for a custom domain."
+        required: false
+        type: string
+
+run-name: Deploy gallery from ${{ github.ref_name }}
 
 permissions:
   contents: read
@@ -13,7 +17,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -22,9 +26,9 @@ jobs:
       run:
         working-directory: demo
     env:
-      NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+      NEXT_PUBLIC_BASE_PATH: ${{ inputs.base_path || format('/{0}', github.event.repository.name) }}
     steps:
-      - name: Checkout
+      - name: Checkout selected branch
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -55,6 +59,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy selected branch to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
