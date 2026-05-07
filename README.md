@@ -54,6 +54,16 @@ node scripts/take-screenshots.mjs [port]  # default port 3000
 
 The script screenshots `/screenshot?accent=HEX` for five accent colors, combines them with ffmpeg, and saves `demo/public/screenshot.gif`. Target ~1MB max (currently ~182KB).
 
+## GitHub Pages gallery
+
+The demo app statically exports the component gallery for GitHub Pages:
+
+```bash
+npm run pages:build
+```
+
+The Pages workflow builds `demo/out` from `/showcase`, including the base shadcn/ui components and the custom SMUI components. It sets `NEXT_PUBLIC_BASE_PATH` to `/<repo>` for project Pages URLs; set it to an empty value in the workflow if publishing behind a custom domain.
+
 ## License
 
 [Unlicense](LICENSE) (public domain)
