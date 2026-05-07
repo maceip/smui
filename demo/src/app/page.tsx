@@ -1452,14 +1452,14 @@ export default async function Home() {
 
       <hr className="border-none h-px bg-border m-0" />
       <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground tracking-wider">
-        smui // inspired by{" "}
+        {"smui // inspired by "}
         <a
           href="https://smui.statico.io"
           className="text-primary hover:text-primary/80 transition-colors"
         >
           spacemolt
         </a>{" "}
-        // public domain
+        {"// public domain"}
         <div className="flex justify-center gap-4 mt-2">
           <a
             href="https://github.com/statico/smui"
