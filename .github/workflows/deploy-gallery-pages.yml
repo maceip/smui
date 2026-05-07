@@ -1,6 +1,9 @@
 name: Deploy gallery to GitHub Pages
 
 on:
+  push:
+    branches:
+      - "**"
   workflow_dispatch:
     inputs:
       base_path:
